@@ -1,0 +1,278 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  @apply bg-brand-cream text-brand-ink;
+}
+
+/* Reusable utilities */
+.btn {
+  @apply inline-flex items-center justify-center px-5 py-3 rounded-lg font-medium transition;
+}
+/* Refined Blue Glass style for Milk Company - Primary Button */
+.btn-primary {
+  @apply relative inline-flex items-center justify-center rounded-full px-6 py-3 font-semibold border border-white/30 overflow-hidden;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
+  backdrop-filter: blur(14px);
+  isolation: isolate;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+
+  /* Deeper, formal blue palette */
+  --lg-start: #b3d9ff; /* pale sky blue */
+  --lg-mid: #80c1ff; /* light azure */
+  --lg-end: #4da6ff; /* medium corporate blue */
+}
+
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  border-radius: 9999px;
+  background: radial-gradient(
+      40% 60% at 20% 30%,
+      rgba(255, 255, 255, 0.12),
+      transparent 60%
+    ),
+    radial-gradient(
+      35% 55% at 80% 70%,
+      rgba(255, 255, 255, 0.08),
+      transparent 60%
+    ),
+    linear-gradient(120deg, var(--lg-start), var(--lg-mid), var(--lg-end));
+  filter: blur(0.3px);
+  opacity: 0.9;
+  z-index: -2;
+  pointer-events: none;
+  animation: lg-flow 9s ease-in-out infinite alternate;
+}
+
+.btn-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.18),
+    rgba(255, 255, 255, 0.05)
+  );
+  -webkit-mask: radial-gradient(
+    closest-side,
+    transparent calc(100% - 12px),
+    #000 calc(100% - 11px)
+  );
+  mask: radial-gradient(
+    closest-side,
+    transparent calc(100% - 12px),
+    #000 calc(100% - 11px)
+  );
+  z-index: -1;
+  pointer-events: none;
+  animation: lg-sheen 6s linear infinite;
+}
+
+.btn-primary:hover {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3),
+    0 4px 16px rgba(128, 193, 255, 0.25), 0 0 28px rgba(128, 193, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.btn-primary:hover::before {
+  filter: blur(6px) saturate(1.05) brightness(1.05);
+  opacity: 1;
+  animation-duration: 7s;
+}
+
+.btn-primary:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5),
+    0 0 20px rgba(128, 193, 255, 0.35);
+}
+
+.btn-secondary {
+  @apply btn border-2 border-brand-primary text-brand-primary hover:bg-brand-accent hover:text-brand-ink;
+}
+
+.container-px {
+  @apply px-4 sm:px-6 lg:px-8;
+}
+.card {
+  @apply bg-white rounded-xl2 shadow-soft;
+}
+
+/* Refined Blue Glass style for Milk Company - Third Button */
+.btn-third {
+  @apply relative inline-flex items-center justify-center rounded-full px-6 py-3 font-semibold border border-white/30 overflow-hidden;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
+  backdrop-filter: blur(14px);
+  isolation: isolate;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.25s ease;
+
+  /* Softer blue palette for secondary CTAs */
+  --lg-start: #d6ecff; /* very pale blue */
+  --lg-mid: #a6d4ff; /* soft baby blue */
+  --lg-end: #80c1ff; /* light azure */
+}
+
+.btn-third::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  border-radius: 9999px;
+  background: radial-gradient(
+      40% 60% at 20% 30%,
+      rgba(255, 255, 255, 0.12),
+      transparent 60%
+    ),
+    radial-gradient(
+      35% 55% at 80% 70%,
+      rgba(255, 255, 255, 0.08),
+      transparent 60%
+    ),
+    linear-gradient(120deg, var(--lg-start), var(--lg-mid), var(--lg-end));
+  filter: blur(0.3px);
+  opacity: 0.9;
+  z-index: -2;
+  pointer-events: none;
+  animation: lg-flow-3 9s ease-in-out infinite alternate;
+}
+
+.btn-third::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.18),
+    rgba(255, 255, 255, 0.05)
+  );
+  -webkit-mask: radial-gradient(
+    closest-side,
+    transparent calc(100% - 12px),
+    #000 calc(100% - 11px)
+  );
+  mask: radial-gradient(
+    closest-side,
+    transparent calc(100% - 12px),
+    #000 calc(100% - 11px)
+  );
+  z-index: -1;
+  pointer-events: none;
+  animation: lg-sheen-3 6s linear infinite;
+}
+
+.btn-third:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3),
+    0 4px 16px rgba(166, 212, 255, 0.25), 0 0 28px rgba(166, 212, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.45);
+}
+
+.btn-third:hover::before {
+  filter: blur(6px) saturate(1.05) brightness(1.05);
+  opacity: 1;
+  animation-duration: 7s;
+}
+
+.btn-third:active {
+  transform: scale(0.97);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35),
+    0 2px 8px rgba(166, 212, 255, 0.2), 0 0 18px rgba(166, 212, 255, 0.25);
+}
+
+.btn-third:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5),
+    0 0 20px rgba(166, 212, 255, 0.35);
+}
+
+/* Animations */
+@keyframes lg-flow-3 {
+  0% {
+    transform: translate(0%, 0%);
+  }
+  100% {
+    transform: translate(4%, -4%);
+  }
+}
+
+@keyframes lg-sheen-3 {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* subtle link underline on hover */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 1px;
+  width: 0;
+  background: currentColor;
+  transition: width 0.2s ease;
+}
+.link-underline:hover::after {
+  width: 100%;
+}
+
+@keyframes goals-scroll-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  } /* shift exactly one set width */
+}
+
+.goals-marquee {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+}
+
+.goals-track {
+  display: flex;
+  gap: 1.5rem; /* matches gap-6 */
+  width: max-content;
+  animation: goals-scroll-x 28s linear infinite;
+}
+
+.goals-marquee:hover .goals-track {
+  animation-play-state: paused;
+}
