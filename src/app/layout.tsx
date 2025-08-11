@@ -4,12 +4,18 @@ import { site } from "@/data/Site";
 import { Header } from "@/components/layouts/Header";
 import { Footer } from "@/components/layouts/Footer";
 
-export const metadata: Metadata = {
+export const metadata = {
   title: `${site.name} — Албан ёсны веб`,
   description:
     "Сүүний салбарыг хөгжүүлэх үндэсний зөвлөлийн албан ёсны веб сайт.",
-  icons: { icon: "/favicon.ico" },
-};
+  icons: {
+    icon: [
+      { url: "/cchuz_logo.png", type: "image/png", sizes: "32x32" },
+      { url: "/cchuz_logo.png", type: "image/png", sizes: "192x192" },
+    ],
+    apple: { url: "/cchuz_logo.png" },
+  },
+} satisfies Metadata;
 
 export default function RootLayout({
   children,
