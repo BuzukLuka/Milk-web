@@ -17,13 +17,12 @@ export type SiteConfig = {
 
 export const site: SiteConfig = {
   name: "Сүүний салбарыг хөгжүүлэх үндэсний зөвлөл",
-  short: "ССХҮЗ",
+  short: "",
   url: "https://example.mn",
-  facebook: "https://www.facebook.com/profile.php?id=100094122697534",
+  facebook: "https://www.facebook.com",
 
-  // add your real details (optional)
   email: "info@example.mn",
-  phone: "+976 9911 2233",
+  phone: "+976 1234 5678",
   address: "Улаанбаатар, Монгол Улс",
 
   nav: [

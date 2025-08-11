@@ -2,6 +2,9 @@
 
 import { Container } from "@/components/Container";
 import { SectionTitle } from "@/components/SectionTitle";
+import { site } from "@/data/Site";
+import { Facebook } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function Contact() {
@@ -55,13 +58,18 @@ export default function Contact() {
           <p>Улаанбаатар, Монгол Улс</p>
 
           <h3 className="font-semibold mt-6 mb-2">Сошиал сувгууд</h3>
-          <a
-            href="https://www.facebook.com/profile.php?id=100094122697534"
-            target="_blank"
-            className="text-brand-primary underline"
-          >
-            Facebook
-          </a>
+          <div className="flex gap-3 pt-2">
+            <Link
+              href={site.facebook}
+              target="_blank"
+              aria-label="Facebook"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 border border-white/10 
+               transition-transform duration-200 ease-out
+               hover:bg-white/15 hover:scale-110 hover:shadow-lg hover:shadow-black/20"
+            >
+              <Facebook className="h-5 w-5 transition-colors duration-200 group-hover:text-blue-500" />
+            </Link>
+          </div>
 
           {/* Газрын зураг */}
           <div className="mt-6 rounded-lg overflow-hidden">

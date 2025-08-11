@@ -106,7 +106,7 @@ export function Footer() {
                   )}`}
                   className="hover:underline"
                 >
-                  {site.phone || "+976 xxxx xxxx"}
+                  {site.phone || "+976 xxxx xxx"}
                 </a>
               </li>
             </ul>

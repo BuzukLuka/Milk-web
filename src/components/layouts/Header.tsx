@@ -2,6 +2,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import React, {
   useEffect,
@@ -160,12 +161,28 @@ export function Header() {
         <div className="flex items-center min-w-0">
           <Link
             href="/"
-            className="group flex items-center gap-3 whitespace-nowrap"
+            className="group flex items-center gap-3 whitespace-nowrap cursor-pointer"
           >
-            <div className="h-10 w-10 rounded-xl bg-brand-primary text-white grid place-items-center font-display font-bold shadow-sm group-hover:scale-[1.03] transition-transform">
-              СС
+            <div
+              className="h-9 w-12 rounded-xl overflow-hidden bg-transparent
+                 transition-transform duration-300 ease-out
+                 group-hover:scale-110 group-active:scale-95
+                 focus-visible:outline-none"
+            >
+              <Image
+                src="/cchuz_logo.png"
+                alt="Logo"
+                width={70}
+                height={70}
+                className="object-contain"
+                priority
+              />
             </div>
-            <span className="font-display font-semibold tracking-tight group-hover:text-brand-primary transition-colors">
+
+            <span
+              className="font-display font-semibold tracking-tight transition-colors duration-300
+                 group-hover:text-brand-primary"
+            >
               {site.short}
             </span>
           </Link>
