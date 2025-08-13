@@ -12,7 +12,7 @@ type Props = {
 };
 
 export function GoalsMarquee({
-  title = "Бидний эрхэм зорилго",
+  title = "",
   subtitle,
   goals,
   icons,

@@ -29,7 +29,7 @@ export default function PartnersPage() {
 
   return (
     <Container className="py-14 space-y-10">
-      <SectionTitle title="Хамтрагч байгууллагууд" />
+      {/* <SectionTitle title="Хамтрагч байгууллагууд" /> */}
       <LogoMarquee
         items={items}
         height={96}

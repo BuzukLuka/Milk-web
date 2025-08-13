@@ -141,16 +141,30 @@ export default function HomePage() {
       {/* Hero */}
       <Hero />
 
-      {/* Mission / Goals */}
-      <Container className="py-16">
-        <GoalsMarquee
-          title="Бидний эрхэм зорилго"
-          subtitle={org.slogan}
-          goals={org.goals}
-          icons={goalIcons}
-        />
-      </Container>
+      <section className="relative">
+        {/* дээд талын жижиг ногоон тууз */}
+        <div className="h-4 bg-[#10a5dd]" />
+        <div className="relative">
+          <h2
+            className="absolute left-1/2 -translate-x-1/2 -top-4
+               w-fit rounded-full bg-[#10a5dd] px-6 py-2
+               text-white font-bold tracking-wide"
+          >
+            БИДНИЙ ЭРХЭМ ЗОРИЛГО
+          </h2>
+        </div>
+      </section>
 
+      {/* Mission / Goals */}
+      <div>
+        <Container>
+          <GoalsMarquee
+            subtitle={org.slogan}
+            goals={org.goals}
+            icons={goalIcons}
+          />
+        </Container>
+      </div>
       {/* Counter section */}
       <section className="bg-transparent">
         <Container className="py-2">
@@ -175,11 +189,24 @@ export default function HomePage() {
         </Container>
       </section>
 
+      <section className="relative py-16">
+        {/* дээд талын жижиг ногоон тууз */}
+        <div className="h-4 bg-[#10a5dd]" />
+        <div className="relative">
+          <h2
+            className="absolute left-1/2 -translate-x-1/2 -top-4
+               w-fit rounded-full bg-[#10a5dd] px-6 py-2
+               text-white font-bold tracking-wide"
+          >
+            ГОЛ ХЭРЭГЖҮҮЛСЭН АЖЛУУД
+          </h2>
+        </div>
+      </section>
+
       {/* Highlighted works */}
       <section className="relative overflow-hidden py-12">
         <div className="absolute inset-0 " />
         <Container className="py-16">
-          <SectionTitle title="Гол хэрэгжүүлсэн ажлууд" />
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Left: image collage */}
             <Reveal className="relative">
@@ -246,6 +273,21 @@ export default function HomePage() {
           setOpen(true);
         }}
       />
+
+      <section className="relative">
+        {/* дээд талын жижиг ногоон тууз */}
+        <div className="h-4 bg-[#10a5dd]" />
+        <div className="relative">
+          <h2
+            className="absolute left-1/2 -translate-x-1/2 -top-4
+               w-fit rounded-full bg-[#10a5dd] px-6 py-2
+               text-white font-bold tracking-wide"
+          >
+            ДЭМЖИХ БАЙГУУЛЛАГУУД
+          </h2>
+        </div>
+      </section>
+
       <NewsDialog
         open={open}
         onClose={() => setOpen(false)}
