@@ -143,11 +143,11 @@ export default function HomePage() {
 
       <section className="relative">
         {/* дээд талын жижиг ногоон тууз */}
-        <div className="h-4 bg-[#10a5dd]" />
+        <div className="h-4 bg-[#71c760]" />
         <div className="relative">
           <h2
             className="absolute left-1/2 -translate-x-1/2 -top-4
-               w-fit rounded-full bg-[#10a5dd] px-6 py-2
+               w-fit rounded-full bg-[#71c760] px-6 py-2
                text-white font-bold tracking-wide"
           >
             БИДНИЙ ЭРХЭМ ЗОРИЛГО
@@ -204,7 +204,7 @@ export default function HomePage() {
       </section>
 
       {/* Highlighted works */}
-      <section className="relative overflow-hidden py-12">
+      <section className="relative overflow-hidden">
         <div className="absolute inset-0 " />
         <Container className="py-16">
           <div className="grid lg:grid-cols-2 gap-8">

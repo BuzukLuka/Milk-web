@@ -24,7 +24,7 @@ const SLIDES: Slide[] = [
       "Дижитал, дэвшилтэт технологиор сүүний салбарын тогтвортой хөгжлийг хамтдаа.",
     ctaPrimary: { href: "/projects", label: "Төслүүд харах" },
     ctaSecondary: { href: "/about", label: "Бидний тухай" },
-    img: "/hello.png",
+    img: "/hello1.png",
     overlay: "bg-black/30",
   },
   {
