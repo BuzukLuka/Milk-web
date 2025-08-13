@@ -4,7 +4,7 @@ import { site } from "@/data/Site";
 import { Header } from "@/components/layouts/Header";
 import { Footer } from "@/components/layouts/Footer";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: `${site.name} — Албан ёсны веб`,
   description:
     "Сүүний салбарыг хөгжүүлэх үндэсний зөвлөлийн албан ёсны веб сайт.",
@@ -15,7 +15,7 @@ export const metadata = {
     ],
     apple: { url: "/cchuz_logo.png" },
   },
-} satisfies Metadata;
+};
 
 export default function RootLayout({
   children,
@@ -23,8 +23,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="mn">
-      <body className="min-h-screen flex flex-col">
+    <html lang="mn" suppressHydrationWarning>
+      <body className="min-h-screen flex flex-col relative">
+        {/* Sitewide gradient + grid background */}
+        <div aria-hidden className="fixed inset-0 -z-50 bg-mesh" />
+        <div aria-hidden className="fixed inset-0 -z-40 bg-grid opacity-80" />
+        <div
+          aria-hidden
+          className="fixed -z-30 inset-x-0 -top-24 h-48 blur-3xl opacity-60"
+          style={{
+            background:
+              "radial-gradient(40% 50% at 50% 0%, rgba(180,225,255,.6), transparent 60%)",
+          }}
+        />
+
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
