@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { GoalsMarquee } from "@/components/GoalsMarquee";
 import PartnersPage from "./support/page";
+import ActivitiesSection from "@/components/ActivitiesSection";
 
 const goalIcons = [Target, Network, ShieldCheck, Award, LineChart, Leaf];
 
@@ -136,6 +137,7 @@ export default function HomePage() {
           </div>
         </Container>
       </section>
+      <ActivitiesSection />
 
       {/* News carousel (with popup) */}
       <NewsCarousel

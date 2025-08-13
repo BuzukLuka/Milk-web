@@ -69,8 +69,8 @@ export function NewsCarousel({
   } as const;
 
   return (
-    <section className="relative">
-      <Container className="py-16">
+    <section className="relative ">
+      <Container className="py-16 ">
         <div className="relative overflow-hidden rounded-xl2 border bg-white shadow-soft">
           <div className="grid lg:grid-cols-2">
             {/* Visual */}
