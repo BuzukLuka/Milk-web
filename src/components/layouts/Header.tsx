@@ -27,6 +27,7 @@ import {
 type NavChild = { label: string; href: string; description?: string };
 type NavItem = { label: string; href: string; children?: NavChild[] };
 
+/** ── (үлдээв: дараагийн үед хэрэг болж магадгүй, гэхдээ ашиглахгүй) */
 function useScrollDirection(threshold = 8) {
   const [scrollDir, setScrollDir] = useState<"up" | "down">("up");
   const lastY = useRef(0);
@@ -99,8 +100,8 @@ export function Header() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
-  const scrollDir = useScrollDirection();
 
+  // ✅ Зөвхөн shadow-т нөлөөлнө, алга болгохгүй
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 2);
     onScroll();
@@ -108,11 +109,13 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Route солигдоход mobile/drops хаах
   useEffect(() => {
     setMobileOpen(false);
     setActiveDropdown(null);
   }, [pathname]);
 
+  // Body scroll lock (mobile menu нээгдэхэд)
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = mobileOpen ? "hidden" : prev || "";
@@ -121,6 +124,7 @@ export function Header() {
     };
   }, [mobileOpen]);
 
+  // Дэлгэц/scroll дээр бүх drop/менюг хаах
   useEffect(() => {
     const closeAll = () => {
       if (mobileOpen) setMobileOpen(false);
@@ -149,12 +153,13 @@ export function Header() {
   return (
     <header
       className={[
-        "sticky top-0 z-[100] transition-all duration-300",
+        "sticky z-[100] transition-all duration-300",
+        // ⬇️ stack-лах offset-оо гаднаас CSS variable-аар удирд (default 0px)
         "bg-white/80 backdrop-blur border-b border-black/5 overflow-visible",
         scrolled ? "shadow-[0_4px_16px_-8px_rgba(0,0,0,0.12)]" : "",
       ].join(" ")}
       style={{
-        transform: scrollDir === "down" ? "translateY(-100%)" : "translateY(0)",
+        top: "var(--stack-offset, 0px)", // ← TopBar байвал :root эсвэл body дээр --stack-offset тавь
       }}
     >
       <Container className="mx-auto h-16 px-4 md:px-6 lg:px-8 grid grid-cols-[auto,1fr,auto] items-center gap-3 overflow-visible">
