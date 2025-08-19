@@ -1,4 +1,5 @@
 // app/(routes)/statistics/page.tsx
+import ProductionMixedChart from "@/components/charts/ProductionMixedChart";
 import { Container } from "@/components/Container";
 import MilkBarChart from "@/components/MilkBarChart";
 import { SectionTitle } from "@/components/SectionTitle";
@@ -131,12 +132,22 @@ export default function StatisticsPage() {
       />
 
       {/* 1 — БҮРЭН ҮЙЛДВЭРЛЭЛ */}
-      <StatTable
+      {/* <StatTable
         caption="Сүү, сүүн бүтээгдэхүүний үйлдвэрлэл (мян. тн)"
         note="*"
         cols={prodCols}
         rows={productionByYear}
-      />
+      /> */}
+
+      <Container className="py-10 space-y-8">
+        <div className="max-w-3xl">
+          <p className="text-base text-muted-foreground">
+            Сүү, сүүн бүтээгдэхүүний үйлдвэрлэл (мян. тн)
+          </p>
+        </div>
+
+        <ProductionMixedChart rows={productionByYear} height={420} />
+      </Container>
 
       {/* 2 — График + тайлбар */}
       <h2 className="text-2xl font-bold text-center mb-6">
