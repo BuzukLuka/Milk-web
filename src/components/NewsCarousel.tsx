@@ -2,51 +2,94 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Container } from "./Container";
 import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
+import { Container } from "./Container";
 
 export type NewsItem = {
   id: string | number;
   title: string;
   excerpt: string;
-  date: string; // ISO or human
-  href?: string; // internal/external
-  image?: string; // /news/xxx.jpg
-  tag?: string; // optional badge
-  // Optional modal payload when opening as a popup:
-  modal?: { title: string; date: string; image?: string; body: string };
+
+  /**
+   * SSR-д форматлагдсан харагдах текст (ж: "2025 оны нэгдүгээр сарын 15").
+   * Клиент дээр дахин формат хийхгүй.
+   */
+  dateText: string;
+
+  /**
+   * ISO datetime string (ж: "2025-01-15" эсвэл "2025-01-15T00:00:00Z").
+   * <time> тагт ашиглах зорилготой, үзэгдэх текст биш.
+   */
+  dateTime?: string;
+
+  href?: string; // internal эсвэл external холбоос
+  image?: string; // зурагны зам (/news/xxx.jpg)
+  tag?: string; // жижиг badge
+
+  // Popup гаргах бол payload
+  modal?: {
+    title: string;
+    dateText: string;
+    dateTime?: string;
+    image?: string;
+    body: string;
+  };
 };
 
 const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const EASE_IN: [number, number, number, number] = [0.4, 0, 1, 1];
 
-export function NewsCarousel({
-  items,
-  onOpen, // optional: (payload) => void
-}: {
+type Props = {
   items: NewsItem[];
   onOpen?: (payload: {
     title: string;
-    date: string;
+    dateText: string;
+    dateTime?: string;
     image?: string;
     body: string;
   }) => void;
-}) {
+
+  /** Автоматаар солигдох интервал (мс). Өгөхгүй бол автоболовсролгүй. */
+  autoplayMs?: number;
+};
+
+export function NewsCarousel({ items, onOpen, autoplayMs }: Props) {
   const total = items.length || 1;
   const [index, setIndex] = useState(0);
   const [dir, setDir] = useState<1 | -1>(1);
 
-  const goto = (i: number) => {
-    const next = (i + total) % total;
-    setDir(next > index ? 1 : -1);
-    setIndex(next);
-  };
-  const next = () => goto(index + 1);
-  const prev = () => goto(index - 1);
+  const goto = useCallback(
+    (i: number) => {
+      const next = ((i % total) + total) % total;
+      setDir(next > index ? 1 : -1);
+      setIndex(next);
+    },
+    [index, total]
+  );
+
+  const next = useCallback(() => goto(index + 1), [goto, index]);
+  const prev = useCallback(() => goto(index - 1), [goto, index]);
 
   const active = useMemo(() => items[index] ?? items[0], [items, index]);
+
+  // Optional autoplay
+  useEffect(() => {
+    if (!autoplayMs || total <= 1) return;
+    const t = setInterval(() => goto(index + 1), autoplayMs);
+    return () => clearInterval(t);
+  }, [autoplayMs, goto, index, total]);
+
+  // Keyboard arrows support
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") prev();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [next, prev]);
 
   const variants = {
     enter: (d: 1 | -1) => ({ x: d * 40, opacity: 0, filter: "blur(2px)" }),
@@ -69,8 +112,8 @@ export function NewsCarousel({
   } as const;
 
   return (
-    <section className="relative ">
-      <Container className="py-16 ">
+    <section className="relative">
+      <Container className="py-16">
         <div className="relative overflow-hidden rounded-xl2 border bg-white shadow-soft">
           <div className="grid lg:grid-cols-2">
             {/* Visual */}
@@ -101,6 +144,7 @@ export function NewsCarousel({
                         fill
                         className="object-cover"
                         priority
+                        sizes="(max-width: 1024px) 100vw, 50vw"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
                     </>
@@ -138,13 +182,23 @@ export function NewsCarousel({
                   {active.tag}
                 </span>
               )}
+
               <h3 className="font-display text-2xl font-bold leading-snug">
                 {active?.title}
               </h3>
+
               <p className="mt-3 text-black/75 leading-relaxed">
                 {active?.excerpt}
               </p>
-              <div className="mt-3 text-sm text-black/60">{active?.date}</div>
+
+              {/* SSR-safe date: text нь серверээс, dateTime нь ISO */}
+              {active?.dateText && (
+                <div className="mt-3 text-sm text-black/60">
+                  <time dateTime={active.dateTime} suppressHydrationWarning>
+                    {active.dateText}
+                  </time>
+                </div>
+              )}
 
               <div className="mt-6">
                 {onOpen && active?.modal ? (
@@ -162,6 +216,7 @@ export function NewsCarousel({
                       active.href?.startsWith("http") ? "_blank" : undefined
                     }
                     className="btn-secondary inline-flex items-center gap-2"
+                    aria-label={`${active.title} — дэлгэрэнгүй унших`}
                   >
                     Дэлгэрэнгүй
                     <ExternalLink className="h-4 w-4" />
