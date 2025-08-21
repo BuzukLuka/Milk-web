@@ -2,14 +2,20 @@
 import React, { useMemo, useRef } from "react";
 import {
   Chart as ChartJS,
+  // Controllers (MUST register for mixed charts in prod)
+  LineController,
+  BarController,
+  // Scales & elements
   CategoryScale,
   LinearScale,
   BarElement,
   PointElement,
   LineElement,
+  // Plugins
   Tooltip,
   Legend,
   Filler,
+  // Types
   ChartOptions,
   ScriptableContext,
   Chart as ChartType,
@@ -18,12 +24,18 @@ import {
 import { Chart } from "react-chartjs-2";
 import type { YearRow } from "@/data/Statistics";
 
+// 🔐 Register EVERYTHING used by the chart
 ChartJS.register(
+  // controllers
+  LineController,
+  BarController,
+  // scales/elements
   CategoryScale,
   LinearScale,
   BarElement,
   PointElement,
   LineElement,
+  // plugins
   Tooltip,
   Legend,
   Filler
@@ -69,7 +81,6 @@ const COLORS = [
 export default function ProductionMixedChart({ rows, height = 360 }: Props) {
   const labels = useMemo(() => rows.map((r) => String(r.year)), [rows]);
 
-  // ⛔️ fix: no `any`, use Chart.js type
   const canvasRef = useRef<ChartType<"bar" | "line"> | null>(null);
 
   const data = useMemo(() => {
@@ -160,7 +171,7 @@ export default function ProductionMixedChart({ rows, height = 360 }: Props) {
       x: {
         stacked: true,
         grid: { display: false },
-        ticks: { font: { size: 12, weight: "bold" } },
+        ticks: { font: { size: 12, weight: "bold" as const } },
       },
       y: {
         stacked: true,
@@ -191,7 +202,6 @@ function fmt(n: number) {
   return n.toLocaleString("mn-MN");
 }
 function labelForKey(k: keyof YearRow) {
-  // ...same as before
   return String(k);
 }
 function hexWithAlpha(hex: string, alpha = 0.7) {
