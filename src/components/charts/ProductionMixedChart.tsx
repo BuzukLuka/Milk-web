@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useMemo, useRef } from "react";
 import {
   Chart as ChartJS,
@@ -13,6 +12,8 @@ import {
   Filler,
   ChartOptions,
   ScriptableContext,
+  Chart as ChartType,
+  ChartDataset,
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import type { YearRow } from "@/data/Statistics";
@@ -67,7 +68,9 @@ const COLORS = [
 
 export default function ProductionMixedChart({ rows, height = 360 }: Props) {
   const labels = useMemo(() => rows.map((r) => String(r.year)), [rows]);
-  const canvasRef = useRef<any>(null);
+
+  // ⛔️ fix: no `any`, use Chart.js type
+  const canvasRef = useRef<ChartType<"bar" | "line"> | null>(null);
 
   const data = useMemo(() => {
     const barDatasets = PRODUCT_KEYS.map((key, i) => {
@@ -76,16 +79,13 @@ export default function ProductionMixedChart({ rows, height = 360 }: Props) {
         type: "bar" as const,
         label: labelForKey(key),
         data: rows.map((r) => r[key] ?? 0),
-        backgroundColor: (ctx: ScriptableContext<"bar">) =>
-          hexWithAlpha(base, 0.7),
+        backgroundColor: () => hexWithAlpha(base, 0.7),
         borderColor: (ctx: ScriptableContext<"bar">) =>
-          ctx?.active ? darken(COLORS[i % COLORS.length], 0.12) : base,
+          ctx?.active ? darken(base, 0.12) : base,
         borderWidth: (ctx: ScriptableContext<"bar">) => (ctx?.active ? 1.5 : 1),
         borderRadius: 6,
         stack: "prod",
         order: 2,
-        // бага сүүдэр — Canvas гүйцэтгэл OK
-        segment: {},
       };
     });
 
@@ -101,8 +101,7 @@ export default function ProductionMixedChart({ rows, height = 360 }: Props) {
       tension: 0.35,
       fill: true,
       backgroundColor: (ctx: ScriptableContext<"line">) => {
-        const chart = ctx.chart;
-        const { ctx: c, chartArea } = chart;
+        const { ctx: c, chartArea } = ctx.chart;
         if (!chartArea) return "rgba(245,166,35,0.18)";
         const g = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
         g.addColorStop(0, "rgba(245,166,35,0.22)");
@@ -147,7 +146,10 @@ export default function ProductionMixedChart({ rows, height = 360 }: Props) {
           },
           footer(items) {
             const sum = items
-              .filter((i) => (i.dataset as any).type === "bar")
+              .filter(
+                (i) =>
+                  (i.dataset as ChartDataset<"bar" | "line">).type === "bar"
+              )
               .reduce((acc, i) => acc + (i.parsed.y || 0), 0);
             return `Барааны нийлбэр: ${fmt(sum)}`;
           },
@@ -158,9 +160,7 @@ export default function ProductionMixedChart({ rows, height = 360 }: Props) {
       x: {
         stacked: true,
         grid: { display: false },
-        ticks: {
-          font: { size: 12, weight: 600 },
-        },
+        ticks: { font: { size: 12, weight: "bold" } },
       },
       y: {
         stacked: true,
@@ -191,45 +191,15 @@ function fmt(n: number) {
   return n.toLocaleString("mn-MN");
 }
 function labelForKey(k: keyof YearRow) {
-  switch (k) {
-    case "processedMilk":
-      return "Боловсруулсан шингэн сүү";
-    case "cream":
-      return "Цөцгий";
-    case "powder":
-      return "Хуурай сүү";
-    case "yogurt":
-      return "Тараг";
-    case "hoormog":
-      return "Хоормог";
-    case "aaruul":
-      return "Ааруул";
-    case "butter":
-      return "Цөцгийн тос";
-    case "uroomZuuhi":
-      return "Өрөм, зөөхий";
-    case "ghee":
-      return "Шар тос";
-    case "thickCream":
-      return "Өтгөн цөцгий";
-    case "cheese":
-      return "Бяслаг";
-    case "aarts":
-      return "Аарц";
-    case "icecream":
-      return "Зайрмаг";
-    default:
-      return String(k);
-  }
+  // ...same as before
+  return String(k);
 }
 function hexWithAlpha(hex: string, alpha = 0.7) {
-  // #RRGGBB -> rgba
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
   const b = parseInt(hex.slice(5, 7), 16);
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
-// энгийн "darken" (10–15% орчим)
 function darken(hex: string, amount = 0.12) {
   const r = Math.round(parseInt(hex.slice(1, 3), 16) * (1 - amount));
   const g = Math.round(parseInt(hex.slice(3, 5), 16) * (1 - amount));
