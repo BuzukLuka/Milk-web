@@ -45,8 +45,7 @@ export default function NewsListPage() {
               onReadMore={() => {
                 setActiveSlug(n.slug);
                 setOpen(true);
-              }}
-            />
+              } } humanDate={""}            />
           ))}
         </div>
       </Container>
