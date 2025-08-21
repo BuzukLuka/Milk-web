@@ -3,7 +3,8 @@
 export type NewsItem = {
   slug: string;
   title: string;
-  date: string; // ISO format YYYY-MM-DD
+  dateText?: string; // optional
+  date?: string;
   image?: string; // Relative path from /public
   excerpt: string;
   body: string; // Can switch to MDX or HTML later

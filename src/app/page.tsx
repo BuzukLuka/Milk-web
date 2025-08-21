@@ -97,6 +97,8 @@ function CountUp({
 
 export default function HomePage() {
   const [open, setOpen] = useState(false);
+  // ⚠️ Таны NewsDialog state өмнө нь { date } шаарддаг байсан.
+  // Тиймээс onOpen-оос ирсэн dateText-ийг энд date болгон хадгална.
   const [modal, setModal] = useState<{
     title: string;
     date: string;
@@ -106,21 +108,27 @@ export default function HomePage() {
 
   const carouselItems = useMemo(
     () =>
-      NEWS.map((n) => ({
-        id: n.slug,
-        title: n.title,
-        excerpt: n.excerpt,
-        date: formatDateMN(n.date),
-        image: n.image || "/news/placeholder.jpg",
-        href: `/news/${n.slug}`,
-        tag: "Мэдээ",
-        modal: {
+      NEWS.map((n) => {
+        const dateText = formatDateMN(n.date ?? "");
+        const dateTime = n.date ?? undefined; // ISO for <time>
+        return {
+          id: n.slug,
           title: n.title,
-          date: formatDateMN(n.date),
+          excerpt: n.excerpt,
+          dateText, // 👈 SSR харагдах текст
+          dateTime, // 👈 ISO
           image: n.image || "/news/placeholder.jpg",
-          body: n.body,
-        },
-      })),
+          href: `/news/${n.slug}`,
+          tag: "Мэдээ",
+          modal: {
+            title: n.title,
+            dateText,   // 👈 REQUIRED by NewsItem.modal type
+            dateTime,   // 👈 optional
+            image: n.image || "/news/placeholder.jpg",
+            body: n.body,
+          },
+        };
+      }),
     []
   );
 
@@ -165,6 +173,7 @@ export default function HomePage() {
           />
         </Container>
       </div>
+
       {/* Counter section */}
       <section className="bg-transparent">
         <Container className="py-2">
@@ -263,13 +272,20 @@ export default function HomePage() {
           </div>
         </Container>
       </section>
+
       <ActivitiesSection />
 
       {/* News carousel + modal */}
       <NewsCarousel
         items={carouselItems}
         onOpen={(payload) => {
-          setModal(payload);
+          // payload { title, dateText, dateTime?, image?, body }
+          setModal({
+            title: payload.title,
+            date: payload.dateText, // 👈 state маань 'date' талбартай
+            image: payload.image,
+            body: payload.body,
+          });
           setOpen(true);
         }}
       />

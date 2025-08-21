@@ -38,7 +38,7 @@ export default function NewsListPage() {
             <NewsCard
               key={n.slug}
               title={n.title}
-              date={formatDateMN(n.date)}
+              date={formatDateMN(n.date ?? "")}
               excerpt={n.excerpt}
               slug={n.slug}
               image={n.image}
@@ -58,7 +58,7 @@ export default function NewsListPage() {
           activeItem
             ? {
                 title: activeItem.title,
-                date: formatDateMN(activeItem.date),
+                date: formatDateMN(activeItem.date ?? ""),
                 image: activeItem.image,
                 body: activeItem.body,
               }
