@@ -11,24 +11,11 @@ export type NewsItem = {
   id: string | number;
   title: string;
   excerpt: string;
-
-  /**
-   * SSR-д форматлагдсан харагдах текст (ж: "2025 оны нэгдүгээр сарын 15").
-   * Клиент дээр дахин формат хийхгүй.
-   */
   dateText: string;
-
-  /**
-   * ISO datetime string (ж: "2025-01-15" эсвэл "2025-01-15T00:00:00Z").
-   * <time> тагт ашиглах зорилготой, үзэгдэх текст биш.
-   */
   dateTime?: string;
-
-  href?: string; // internal эсвэл external холбоос
-  image?: string; // зурагны зам (/news/xxx.jpg)
-  tag?: string; // жижиг badge
-
-  // Popup гаргах бол payload
+  href?: string;
+  image?: string;
+  tag?: string;
   modal?: {
     title: string;
     dateText: string;
@@ -41,7 +28,6 @@ export type NewsItem = {
 const EASE_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const EASE_IN: [number, number, number, number] = [0.4, 0, 1, 1];
 
-
 type Props = {
   items: NewsItem[];
   onOpen?: (payload: {
@@ -51,8 +37,6 @@ type Props = {
     image?: string;
     body: string;
   }) => void;
-
-  /** Автоматаар солигдох интервал (мс). Өгөхгүй бол автоболовсролгүй. */
   autoplayMs?: number;
 };
 
@@ -75,14 +59,12 @@ export function NewsCarousel({ items, onOpen, autoplayMs }: Props) {
 
   const active = useMemo(() => items[index] ?? items[0], [items, index]);
 
-  // Optional autoplay
   useEffect(() => {
     if (!autoplayMs || total <= 1) return;
     const t = setInterval(() => goto(index + 1), autoplayMs);
     return () => clearInterval(t);
   }, [autoplayMs, goto, index, total]);
 
-  // Keyboard arrows support
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight") next();
@@ -113,23 +95,24 @@ export function NewsCarousel({ items, onOpen, autoplayMs }: Props) {
   } as const;
 
   return (
-    <section className="relative">
+    <section className="relative overflow-x-hidden">
       <Container className="py-16">
         <div className="relative overflow-hidden rounded-xl2 border bg-white shadow-soft">
           <div className="grid lg:grid-cols-2">
             {/* Visual */}
-            <div className="relative h-64 sm:h-80 lg:h-[420px]">
+            <div className="relative h-64 sm:h-80 lg:h-[420px] overflow-hidden">
               <AnimatePresence custom={dir} mode="popLayout">
                 <motion.div
                   key={String(active?.id)}
-                  className="absolute inset-0"
+                  className="absolute inset-0 overflow-hidden will-change-transform"
                   custom={dir}
                   initial="enter"
                   animate="center"
                   exit="exit"
                   variants={variants}
                   drag="x"
-                  dragElastic={0.06}
+                  dragElastic={0.02} // tighter drag
+                  dragMomentum={false} // no overshoot fling
                   dragConstraints={{ left: 0, right: 0 }}
                   onDragEnd={(_, info) => {
                     const { offset, velocity } = info;
@@ -143,11 +126,12 @@ export function NewsCarousel({ items, onOpen, autoplayMs }: Props) {
                         src={active.image}
                         alt={active.title}
                         fill
-                        className="object-cover"
                         priority
+                        draggable={false}
+                        className="select-none object-cover"
                         sizes="(max-width: 1024px) 100vw, 50vw"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent pointer-events-none" />
                     </>
                   ) : (
                     <div className="absolute inset-0 bg-brand-primary/10" />
@@ -192,7 +176,6 @@ export function NewsCarousel({ items, onOpen, autoplayMs }: Props) {
                 {active?.excerpt}
               </p>
 
-              {/* SSR-safe date: text нь серверээс, dateTime нь ISO */}
               {active?.dateText && (
                 <div className="mt-3 text-sm text-black/60">
                   <time dateTime={active.dateTime} suppressHydrationWarning>
@@ -202,6 +185,7 @@ export function NewsCarousel({ items, onOpen, autoplayMs }: Props) {
               )}
 
               <div className="mt-6">
+                {/* if modal payload provided */}
                 {onOpen && active?.modal ? (
                   <button
                     onClick={() => onOpen(active.modal!)}
@@ -225,7 +209,6 @@ export function NewsCarousel({ items, onOpen, autoplayMs }: Props) {
                 ) : null}
               </div>
 
-              {/* Dots */}
               {total > 1 && (
                 <div className="mt-6 flex gap-2">
                   {items.map((n, i) => (

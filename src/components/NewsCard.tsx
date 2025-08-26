@@ -4,11 +4,11 @@ import Link from "next/link";
 type Props = {
   title: string;
   date: string; // ISO
-  humanDate: string; // ⬅️ сервер дээр урьдчилж тооцоолоод өгнө
+  humanDate: string; // хүний унших формат
   excerpt: string;
   slug: string;
   image?: string;
-  onReadMore?: () => void;
+  onReadMore?: () => void; // байвал картыг бүхэлд нь дарна
 };
 
 export function NewsCard({
@@ -20,8 +20,31 @@ export function NewsCard({
   image,
   onReadMore,
 }: Props) {
+  const clickable = Boolean(onReadMore);
+
   return (
-    <article className="group overflow-hidden rounded-xl2 border bg-white shadow-soft hover:shadow-lg transition">
+    <article
+      className={[
+        "group overflow-hidden rounded-xl2 border bg-white shadow-soft hover:shadow-lg transition",
+        clickable
+          ? "cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-primary"
+          : "",
+      ].join(" ")}
+      onClick={onReadMore}
+      role={clickable ? "button" : undefined}
+      tabIndex={clickable ? 0 : undefined}
+      aria-label={clickable ? `${title} — дэлгэрэнгүй унших` : undefined}
+      onKeyDown={
+        clickable
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onReadMore?.();
+              }
+            }
+          : undefined
+      }
+    >
       <div className="relative h-44">
         <Image
           src={image || "/news/placeholder.jpg"}
@@ -36,7 +59,6 @@ export function NewsCard({
       <div className="p-5">
         <h3 className="font-semibold leading-snug line-clamp-2">{title}</h3>
 
-        {/* Серверээс ирсэн яг л тэр текстийг харуулна */}
         <p className="text-xs text-black/60 mt-1">
           <time dateTime={date}>{humanDate}</time>
         </p>
@@ -45,13 +67,10 @@ export function NewsCard({
 
         <div className="mt-4 flex items-center justify-between">
           {onReadMore ? (
-            <button
-              onClick={onReadMore}
-              className="inline-flex items-center gap-2 text-brand-primary font-medium hover:underline"
-              aria-label={`${title} — дэлгэрэнгүй унших`}
-            >
+            // Картаар дардаг тул энэхүү текстэд дарсан ч мөн адил ажиллана.
+            <span className="pointer-events-none inline-flex items-center gap-2 text-brand-primary font-medium underline-offset-2 group-hover:underline">
               Дэлгэрэнгүй <span aria-hidden>→</span>
-            </button>
+            </span>
           ) : (
             <Link
               href={`/news/${slug}`}

@@ -9,9 +9,12 @@ import { SectionTitle } from "@/components/SectionTitle";
 import { Reveal } from "@/components/Reveal";
 
 import { org } from "@/data/Content";
-import { NEWS } from "@/data/News";
+// import { NEWS } from "@/data/News"; // ⛔️ хэрэггүй боллоо
 
-import { NewsCarousel } from "@/components/NewsCarousel";
+import {
+  NewsCarousel,
+  type NewsItem as CarouselItem,
+} from "@/components/NewsCarousel";
 import { NewsDialog } from "@/components/NewsDialog";
 
 import {
@@ -28,7 +31,9 @@ import ActivitiesSection from "@/components/ActivitiesSection";
 
 const goalIcons = [Target, Network, ShieldCheck, Award, LineChart, Leaf];
 
-function formatDateMN(iso: string) {
+// ---------- helpers ----------
+function formatDateMN(iso?: string | null) {
+  if (!iso) return "";
   const d = new Date(iso);
   return d.toLocaleDateString("mn-MN", {
     year: "numeric",
@@ -37,7 +42,27 @@ function formatDateMN(iso: string) {
   });
 }
 
-/* Parse values like "120+" */
+function stripHtmlToExcerpt(html: string, max = 160) {
+  const text = html
+    .replace(/<[^>]*>/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+  return text.length > max ? text.slice(0, max).trim() + "…" : text;
+}
+
+function absolutize(url?: string | null, backendOrigin?: string) {
+  if (!url) return undefined;
+  if (/^https?:\/\//i.test(url)) return url;
+  const base =
+    backendOrigin ||
+    (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api").replace(
+      /\/api\/?$/,
+      ""
+    );
+  return url.startsWith("/") ? `${base}${url}` : `${base}/${url}`;
+}
+
+// ---------- Counter ----------
 function parseTarget(value: string | number): { end: number; suffix: string } {
   if (typeof value === "number") return { end: value, suffix: "" };
   const match = value.match(/^(\d+(?:\.\d+)?)(.*)$/);
@@ -45,7 +70,6 @@ function parseTarget(value: string | number): { end: number; suffix: string } {
   return { end: Number(match[1]) || 0, suffix: match[2] || "" };
 }
 
-/* CountUp when visible */
 function CountUp({
   to,
   duration = 1400,
@@ -95,10 +119,19 @@ function CountUp({
   );
 }
 
+// ---------- Main Page ----------
+type ApiNews = {
+  id: number;
+  title: string;
+  slug: string;
+  body: string;
+  cover: string | null;
+  is_published: boolean;
+  published_at: string | null;
+};
+
 export default function HomePage() {
   const [open, setOpen] = useState(false);
-  // ⚠️ Таны NewsDialog state өмнө нь { date } шаарддаг байсан.
-  // Тиймээс onOpen-оос ирсэн dateText-ийг энд date болгон хадгална.
   const [modal, setModal] = useState<{
     title: string;
     date: string;
@@ -106,33 +139,71 @@ export default function HomePage() {
     body: string;
   } | null>(null);
 
-  const carouselItems = useMemo(
-    () =>
-      NEWS.map((n) => {
-        const dateText = formatDateMN(n.date ?? "");
-        const dateTime = n.date ?? undefined; // ISO for <time>
-        return {
-          id: n.slug,
-          title: n.title,
-          excerpt: n.excerpt,
-          dateText, // 👈 SSR харагдах текст
-          dateTime, // 👈 ISO
-          image: n.image || "/news/placeholder.jpg",
-          href: `/news/${n.slug}`,
-          tag: "Мэдээ",
-          modal: {
-            title: n.title,
-            dateText,   // 👈 REQUIRED by NewsItem.modal type
-            dateTime,   // 👈 optional
-            image: n.image || "/news/placeholder.jpg",
-            body: n.body,
-          },
-        };
-      }),
-    []
-  );
+  // ✅ Backend-ээс сүүлийн 5 мэдээ татах (client fetch)
+  const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([]);
+  const [loadingNews, setLoadingNews] = useState(false);
 
-  // Prefer live data lengths; fallback to defaults
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        setLoadingNews(true);
+        const API_BASE =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+        // DRF pagination-тай эсэхээс үл хамаарна
+        const res = await fetch(
+          `${API_BASE}/news/?ordering=-published_at&page=1&page_size=5`,
+          {
+            // rewrite ашиглавал baseURL-ээ "/api" болгож болно
+            // fetch("/api/news/?ordering=-published_at&page=1&page_size=5")
+            credentials: "include",
+            headers: { Accept: "application/json" },
+          }
+        );
+        const json = await res.json();
+        const rows: ApiNews[] = Array.isArray(json) ? json : json.results ?? [];
+
+        const backendOrigin = API_BASE.replace(/\/api\/?$/, "");
+        const items: CarouselItem[] = rows.map((n) => {
+          const dateText = formatDateMN(n.published_at);
+          const dateTime = n.published_at ?? undefined;
+          return {
+            id: n.id,
+            title: n.title,
+            excerpt: stripHtmlToExcerpt(n.body),
+            dateText,
+            dateTime,
+            href: `/news/${n.slug}`,
+            image:
+              absolutize(n.cover ?? undefined, backendOrigin) ||
+              "/news/placeholder.jpg",
+            tag: "Мэдээ",
+            modal: {
+              title: n.title,
+              dateText,
+              dateTime,
+              image:
+                absolutize(n.cover ?? undefined, backendOrigin) ||
+                "/news/placeholder.jpg",
+              body: n.body, // CKEditor HTML (NewsDialog дотроо sanitize-тай)
+            },
+          };
+        });
+
+        if (alive) setCarouselItems(items);
+      } catch (e) {
+        console.error("Failed to load latest news:", e);
+        if (alive) setCarouselItems([]); // fallback
+      } finally {
+        if (alive) setLoadingNews(false);
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  // live data lengths; fallback to defaults
   const members = org?.board?.members?.length ?? null;
   const projects = org?.projects?.length ?? null;
   const partners = org?.partners?.length ?? null;
@@ -150,13 +221,18 @@ export default function HomePage() {
       <Hero />
 
       <section className="relative">
-        {/* дээд талын жижиг ногоон тууз */}
+        {/* Дээд тууз */}
         <div className="h-4 bg-[#71c760]" />
-        <div className="relative">
+
+        {/* Pill гарчиг — absolute ашиглахгүй */}
+        <div className="-mt-4 flex justify-center pb-2">
           <h2
-            className="absolute left-1/2 -translate-x-1/2 -top-4
-               w-fit rounded-full bg-[#71c760] px-6 py-2
-               text-white font-bold tracking-wide"
+            className="
+        inline-flex items-center justify-center
+        rounded-full bg-[#71c760] px-5 sm:px-6 py-2
+        text-white font-bold tracking-wide text-[11px] sm:text-sm md:text-base
+        text-center shadow
+      "
           >
             БИДНИЙ ЭРХЭМ ЗОРИЛГО
           </h2>
@@ -198,14 +274,19 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section className="relative py-16">
-        {/* дээд талын жижиг ногоон тууз */}
+      <section className="relative">
+        {/* Дээд тууз */}
         <div className="h-4 bg-[#10a5dd]" />
-        <div className="relative">
+
+        {/* Pill гарчиг — absolute ашиглахгүй */}
+        <div className="-mt-4 flex justify-center pb-2">
           <h2
-            className="absolute left-1/2 -translate-x-1/2 -top-4
-               w-fit rounded-full bg-[#10a5dd] px-6 py-2
-               text-white font-bold tracking-wide"
+            className="
+        inline-flex items-center justify-center
+        rounded-full bg-[#10a5dd] px-5 sm:px-6 py-2
+        text-white font-bold tracking-wide text-[11px] sm:text-sm md:text-base
+        text-center shadow
+      "
           >
             ГОЛ ХЭРЭГЖҮҮЛСЭН АЖЛУУД
           </h2>
@@ -273,16 +354,34 @@ export default function HomePage() {
         </Container>
       </section>
 
+      <section className="relative">
+        {/* Дээд тууз */}
+        <div className="h-4 bg-[#71c760]" />
+
+        {/* Pill гарчиг — absolute ашиглахгүй */}
+        <div className="-mt-4 flex justify-center pb-2">
+          <h2
+            className="
+        inline-flex items-center justify-center
+        rounded-full bg-[#71c760] px-5 sm:px-6 py-2
+        text-white font-bold tracking-wide text-[11px] sm:text-sm md:text-base
+        text-center shadow
+      "
+          >
+            БИДНИЙ ЭРХЭМ ЗОРИЛГО
+          </h2>
+        </div>
+      </section>
+
       <ActivitiesSection />
 
-      {/* News carousel + modal */}
+      {/* ✅ News carousel + modal (бекэндаас ирсэн 5 мэдээ) */}
       <NewsCarousel
         items={carouselItems}
         onOpen={(payload) => {
-          // payload { title, dateText, dateTime?, image?, body }
           setModal({
             title: payload.title,
-            date: payload.dateText, // 👈 state маань 'date' талбартай
+            date: payload.dateText,
             image: payload.image,
             body: payload.body,
           });
@@ -291,13 +390,18 @@ export default function HomePage() {
       />
 
       <section className="relative">
-        {/* дээд талын жижиг ногоон тууз */}
+        {/* Дээд тууз */}
         <div className="h-4 bg-[#10a5dd]" />
-        <div className="relative">
+
+        {/* Pill гарчиг — absolute ашиглахгүй */}
+        <div className="-mt-4 flex justify-center pb-2">
           <h2
-            className="absolute left-1/2 -translate-x-1/2 -top-4
-               w-fit rounded-full bg-[#10a5dd] px-6 py-2
-               text-white font-bold tracking-wide"
+            className="
+        inline-flex items-center justify-center
+        rounded-full bg-[#10a5dd] px-5 sm:px-6 py-2
+        text-white font-bold tracking-wide text-[11px] sm:text-sm md:text-base
+        text-center shadow
+      "
           >
             ДЭМЖИХ БАЙГУУЛЛАГУУД
           </h2>
