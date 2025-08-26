@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { site } from "@/data/Site";
 import { Header } from "@/components/layouts/Header";
 import { Footer } from "@/components/layouts/Footer";
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: `${site.name} — Албан ёсны веб`,
@@ -38,7 +39,9 @@ export default function RootLayout({
         />
 
         <Header />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          <Providers>{children}</Providers>
+        </main>
         <Footer />
       </body>
     </html>

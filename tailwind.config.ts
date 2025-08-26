@@ -1,4 +1,6 @@
+// tailwind.config.ts
 import type { Config } from "tailwindcss";
+import typography from "@tailwindcss/typography";
 
 const config: Config = {
   content: ["./src/app/**/*.{ts,tsx}", "./src/components/**/*.{ts,tsx}"],
@@ -6,13 +8,13 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          primary: "#2D6A9F", // Dairy Blue
-          secondary: "#6BBF59", // Fresh Green
-          accent: "#FFD166", // Golden Cream (hover/accent)
-          ink: "#333333", // Text
+          primary: "#2D6A9F",
+          secondary: "#6BBF59",
+          accent: "#FFD166",
+          ink: "#333333",
           milk: "#FFFFFF",
-          cream: "#FAF9F6", // Background
-          deep: "#1A4F75", // Link hover / dark primary
+          cream: "#FAF9F6",
+          deep: "#1A4F75",
         },
       },
       fontFamily: {
@@ -27,6 +29,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [typography], // <<< enable it
 };
 export default config;
