@@ -9,38 +9,13 @@ import {
   dryMilkImport,
   coverageRows,
   supplyRows,
-  type YearRow,
+  // ⛔️ type YearRow — ашиглахгүй тул импортлохгүй
   type DryMilkImportRow,
   type CoverageRow,
   type SupplyBySourceRow,
 } from "@/data/Statistics";
 
 export const metadata = { title: "Статистик" };
-
-/* 1) Үйлдвэрлэлийн хүснэгт — бүх нэр төрөл */
-const prodCols: TableCol<YearRow>[] = [
-  {
-    key: "year",
-    label: "Үйлдвэрлэлийн хэмжээ, он",
-    align: "center",
-    noGroup: true,
-    decimals: 0,
-  },
-  { key: "processedMilk", label: "Боловсруулсан шингэн сүү", align: "center" },
-  { key: "cream", label: "Цөцгий", align: "center" },
-  { key: "powder", label: "Хуурай сүү", align: "center" },
-  { key: "yogurt", label: "Тараг", align: "center" },
-  { key: "hoormog", label: "Хоормог", align: "center" },
-  { key: "aaruul", label: "Ааруул", align: "center" },
-  { key: "butter", label: "Цөцгийн тос", align: "center" },
-  { key: "uroomZuuhi", label: "Өрөм, зөөхий", align: "center" },
-  { key: "ghee", label: "Шар тос", align: "center" },
-  { key: "thickCream", label: "Өтгөн цөцгий", align: "center" },
-  { key: "cheese", label: "Бяслаг", align: "center" },
-  { key: "aarts", label: "Аарц", align: "center" },
-  { key: "icecream", label: "Зайрмаг", align: "center" },
-  { key: "total", label: "Нийт дүн", align: "center" },
-];
 
 /* 2) Хэрэгцээ ба хангамж (custom head) */
 const coverageCols: TableCol<CoverageRow>[] = [
@@ -131,21 +106,13 @@ export default function StatisticsPage() {
         subtitle="Сүү, сүүн бүтээгдэхүүний үйлдвэрлэл, хангамж"
       />
 
-      {/* 1 — БҮРЭН ҮЙЛДВЭРЛЭЛ */}
-      {/* <StatTable
-        caption="Сүү, сүүн бүтээгдэхүүний үйлдвэрлэл (мян. тн)"
-        note="*"
-        cols={prodCols}
-        rows={productionByYear}
-      /> */}
-
+      {/* 1 — Үйлдвэрлэлийн график */}
       <Container className="py-10 space-y-8">
         <div className="max-w-3xl">
           <p className="text-base text-muted-foreground">
             Сүү, сүүн бүтээгдэхүүний үйлдвэрлэл (мян. тн)
           </p>
         </div>
-
         <ProductionMixedChart rows={productionByYear} height={420} />
       </Container>
 
@@ -162,19 +129,17 @@ export default function StatisticsPage() {
         <div>
           <p className="text-justify leading-relaxed mb-4">
             Манай улсын хүн ам сүү, сүүн бүтээгдэхүүнийг НҮБ-ийн Хүнс, хөдөө аж
-            ахуйн байгууллага болон Дэлхийн эрүүл мэндийн байгууллагаас зөвлөмж
-            болгож буй зохистой хэрэглээнээс доогуур хэрэглэж байгаа ба сүүлийн
-            2 жилийн хэрэглээнээс үзэхэд сүүг зөвлөмж хэмжээнээс арваад хувиар
-            (92.1%), сүүн бүтээгдэхүүнийг хорь шахуй (81.3%) хувиар доогуур
-            хэрэглээтэй бөгөөд сүүний хэрэглээг дотоодын үйлдвэрлэлээр бүрэн
-            хангаж, сүүн бүтээгдэхүүний 51.2%-ийг дотоодын үйлдвэрлэлээр,
-            48.8%-ийг импортын бүтээгдэхүүнээр хангасан байна.
+            ахуйн байгууллага болон ДЭМБ-аас зөвлөмж болгосон зохистой
+            хэмжээнээс доогуур хэрэглэж байна. Сүүлийн 2 жилийн хэрэглээнээс
+            үзэхэд сүүг 92.1%, сүүн бүтээгдэхүүнийг 81.3% түвшинд хэрэглэсэн
+            бөгөөд сүүний хэрэглээг дотоодын үйлдвэрлэлээр бүрэн хангаж, сүүн
+            бүтээгдэхүүний 51.2%-ийг дотоодын үйлдвэрлэлээр, 48.8%-ийг импортын
+            бүтээгдэхүүнээр хангасан байна.
           </p>
           <p className="text-justify leading-relaxed">
             Сүү, сүүн бүтээгдэхүүний боловсруулалтын хэмжээ сүүлийн 3 жилд
             дунджаар 9% өсөж, 2024 онд 148.6 мян.тн болж, хөдөө аж ахуйгаас
-            бэлтгэсэн сүүний 70 гаруй хувийг үйлдвэрийн аргаар боловсруулсан
-            байна.
+            бэлтгэсэн сүүний 70 гаруй хувийг үйлдвэрийн аргаар боловсруулжээ.
           </p>
         </div>
       </div>

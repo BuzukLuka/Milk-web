@@ -5,11 +5,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Hero } from "@/components/Hero";
 import { Container } from "@/components/Container";
-import { SectionTitle } from "@/components/SectionTitle";
+// import { SectionTitle } from "@/components/SectionTitle"; // ⛔️ хэрэггүй тул устгасан
 import { Reveal } from "@/components/Reveal";
 
 import { org } from "@/data/Content";
-// import { NEWS } from "@/data/News"; // ⛔️ хэрэггүй боллоо
+// import { NEWS } from "@/data/News";
 
 import {
   NewsCarousel,
@@ -29,9 +29,10 @@ import { GoalsMarquee } from "@/components/GoalsMarquee";
 import PartnersPage from "./support/page";
 import ActivitiesSection from "@/components/ActivitiesSection";
 
+/* -------------------- helpers -------------------- */
+
 const goalIcons = [Target, Network, ShieldCheck, Award, LineChart, Leaf];
 
-// ---------- helpers ----------
 function formatDateMN(iso?: string | null) {
   if (!iso) return "";
   const d = new Date(iso);
@@ -62,7 +63,8 @@ function absolutize(url?: string | null, backendOrigin?: string) {
   return url.startsWith("/") ? `${base}${url}` : `${base}/${url}`;
 }
 
-// ---------- Counter ----------
+/* -------------------- counter -------------------- */
+
 function parseTarget(value: string | number): { end: number; suffix: string } {
   if (typeof value === "number") return { end: value, suffix: "" };
   const match = value.match(/^(\d+(?:\.\d+)?)(.*)$/);
@@ -119,7 +121,8 @@ function CountUp({
   );
 }
 
-// ---------- Main Page ----------
+/* -------------------- types -------------------- */
+
 type ApiNews = {
   id: number;
   title: string;
@@ -130,6 +133,8 @@ type ApiNews = {
   published_at: string | null;
 };
 
+/* -------------------- page -------------------- */
+
 export default function HomePage() {
   const [open, setOpen] = useState(false);
   const [modal, setModal] = useState<{
@@ -139,9 +144,9 @@ export default function HomePage() {
     body: string;
   } | null>(null);
 
-  // ✅ Backend-ээс сүүлийн 5 мэдээ татах (client fetch)
+  // Backend-ээс сүүлийн 5 мэдээ татах
   const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([]);
-  const [loadingNews, setLoadingNews] = useState(false);
+  const [loadingNews, setLoadingNews] = useState(false); // ✅ UI-д ашиглана
 
   useEffect(() => {
     let alive = true;
@@ -150,12 +155,10 @@ export default function HomePage() {
         setLoadingNews(true);
         const API_BASE =
           process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
-        // DRF pagination-тай эсэхээс үл хамаарна
+
         const res = await fetch(
           `${API_BASE}/news/?ordering=-published_at&page=1&page_size=5`,
           {
-            // rewrite ашиглавал baseURL-ээ "/api" болгож болно
-            // fetch("/api/news/?ordering=-published_at&page=1&page_size=5")
             credentials: "include",
             headers: { Accept: "application/json" },
           }
@@ -185,7 +188,7 @@ export default function HomePage() {
               image:
                 absolutize(n.cover ?? undefined, backendOrigin) ||
                 "/news/placeholder.jpg",
-              body: n.body, // CKEditor HTML (NewsDialog дотроо sanitize-тай)
+              body: n.body,
             },
           };
         });
@@ -193,7 +196,7 @@ export default function HomePage() {
         if (alive) setCarouselItems(items);
       } catch (e) {
         console.error("Failed to load latest news:", e);
-        if (alive) setCarouselItems([]); // fallback
+        if (alive) setCarouselItems([]);
       } finally {
         if (alive) setLoadingNews(false);
       }
@@ -228,11 +231,11 @@ export default function HomePage() {
         <div className="-mt-4 flex justify-center pb-2">
           <h2
             className="
-        inline-flex items-center justify-center
-        rounded-full bg-[#71c760] px-5 sm:px-6 py-2
-        text-white font-bold tracking-wide text-[11px] sm:text-sm md:text-base
-        text-center shadow
-      "
+              inline-flex items-center justify-center
+              rounded-full bg-[#71c760] px-5 sm:px-6 py-2
+              text-white font-bold tracking-wide text-[11px] sm:text-sm md:text-base
+              text-center shadow
+            "
           >
             БИДНИЙ ЭРХЭМ ЗОРИЛГО
           </h2>
@@ -282,11 +285,11 @@ export default function HomePage() {
         <div className="-mt-4 flex justify-center pb-2">
           <h2
             className="
-        inline-flex items-center justify-center
-        rounded-full bg-[#10a5dd] px-5 sm:px-6 py-2
-        text-white font-bold tracking-wide text-[11px] sm:text-sm md:text-base
-        text-center shadow
-      "
+              inline-flex items-center justify-center
+              rounded-full bg-[#10a5dd] px-5 sm:px-6 py-2
+              text-white font-bold tracking-wide text-[11px] sm:text-sm md:text-base
+              text-center shadow
+            "
           >
             ГОЛ ХЭРЭГЖҮҮЛСЭН АЖЛУУД
           </h2>
@@ -362,11 +365,11 @@ export default function HomePage() {
         <div className="-mt-4 flex justify-center pb-2">
           <h2
             className="
-        inline-flex items-center justify-center
-        rounded-full bg-[#71c760] px-5 sm:px-6 py-2
-        text-white font-bold tracking-wide text-[11px] sm:text-sm md:text-base
-        text-center shadow
-      "
+              inline-flex items-center justify-center
+              rounded-full bg-[#71c760] px-5 sm:px-6 py-2
+              text-white font-bold tracking-wide text-[11px] sm:text-sm md:text-base
+              text-center shadow
+            "
           >
             БИДНИЙ ЭРХЭМ ЗОРИЛГО
           </h2>
@@ -375,19 +378,33 @@ export default function HomePage() {
 
       <ActivitiesSection />
 
-      {/* ✅ News carousel + modal (бекэндаас ирсэн 5 мэдээ) */}
-      <NewsCarousel
-        items={carouselItems}
-        onOpen={(payload) => {
-          setModal({
-            title: payload.title,
-            date: payload.dateText,
-            image: payload.image,
-            body: payload.body,
-          });
-          setOpen(true);
-        }}
-      />
+      {/* News: loading/ready хоёр төлөв */}
+      {loadingNews ? (
+        <div className="mx-auto max-w-6xl px-4 py-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="card p-4">
+                <div className="h-40 bg-black/5 rounded-md mb-3" />
+                <div className="h-4 bg-black/10 rounded w-3/4 mb-2" />
+                <div className="h-3 bg-black/10 rounded w-1/2" />
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <NewsCarousel
+          items={carouselItems}
+          onOpen={(payload) => {
+            setModal({
+              title: payload.title,
+              date: payload.dateText,
+              image: payload.image,
+              body: payload.body,
+            });
+            setOpen(true);
+          }}
+        />
+      )}
 
       <section className="relative">
         {/* Дээд тууз */}
@@ -397,24 +414,24 @@ export default function HomePage() {
         <div className="-mt-4 flex justify-center pb-2">
           <h2
             className="
-        inline-flex items-center justify-center
-        rounded-full bg-[#10a5dd] px-5 sm:px-6 py-2
-        text-white font-bold tracking-wide text-[11px] sm:text-sm md:text-base
-        text-center shadow
-      "
+              inline-flex items-center justify-center
+              rounded-full bg-[#10a5dd] px-5 sm:px-6 py-2
+              text-white font-bold tracking-wide text-[11px] sm:text-sm md:text-base
+              text-center shadow
+            "
           >
             ДЭМЖИХ БАЙГУУЛЛАГУУД
           </h2>
         </div>
       </section>
 
+      {/* Dialog & Partners */}
       <NewsDialog
         open={open}
         onClose={() => setOpen(false)}
         item={modal || undefined}
       />
 
-      {/* Partners */}
       <div className="mt-10">
         <PartnersPage />
       </div>

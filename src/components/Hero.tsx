@@ -68,7 +68,7 @@ export function Hero() {
   const paginate = (dir: 1 | -1) => {
     setDirection(dir);
     setIndex((i) => (i + dir + total) % total);
-    clearTimer(); // prevent immediate auto-switch after manual nav
+    clearTimer(); // manual nav хиймэгц одоогийн timeout-ийг тасална
   };
 
   const goTo = (i: number) => {
@@ -77,15 +77,18 @@ export function Hero() {
     clearTimer();
   };
 
-  const next = () => paginate(1);
-  const prev = () => paginate(-1);
-
-  // Autoplay with pause on hover/focus
+  // Autoplay with pause on hover/focus — 'next' функцийг ашиглахгүй
   useEffect(() => {
     if (paused) return;
-    timer.current = setTimeout(next, AUTOPLAY_MS);
+    clearTimer();
+    timer.current = setTimeout(() => {
+      // дараагийн слайд руу автоматаар шилжинэ
+      setDirection(1);
+      setIndex((i) => (i + 1 + total) % total);
+    }, AUTOPLAY_MS);
+
     return clearTimer;
-  }, [index, paused]);
+  }, [index, paused, total]);
 
   const active = useMemo(() => SLIDES[index], [index]);
 
@@ -245,7 +248,7 @@ export function Hero() {
           </div>
         </div>
 
-        {/* Dots (improved) */}
+        {/* Dots */}
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 pointer-events-auto flex gap-3">
           {SLIDES.map((s, i) => {
             const isActive = i === index;

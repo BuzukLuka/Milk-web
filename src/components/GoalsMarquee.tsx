@@ -8,7 +8,7 @@ type Props = {
   subtitle?: string;
   goals: string[];
   icons: ComponentType<{ className?: string }>[];
-  centerTitle?: boolean; // optional: center heading from here too
+  centerTitle?: boolean; // гарчгийг төвд байрлуулах эсэх
 };
 
 export function GoalsMarquee({
@@ -16,10 +16,10 @@ export function GoalsMarquee({
   subtitle,
   goals,
   icons,
-  centerTitle = true, // default to center title
+  centerTitle = true,
 }: Props) {
   const base = goals.slice(0, Math.max(6, goals.length));
-  const duplicated = [...base, ...base]; // for seamless loop
+  const duplicated = [...base, ...base];
 
   const Card = ({ text, idx }: { text: string; idx: number }) => {
     const Icon = icons[idx % icons.length];
@@ -41,8 +41,10 @@ export function GoalsMarquee({
 
   return (
     <section className="py-16">
-      {/* ✅ pass center prop to actually center the heading */}
-      <SectionTitle title={title} subtitle={subtitle} />
+      {/* centerTitle-г ашиглаж байна */}
+      <div className={centerTitle ? "text-center" : undefined}>
+        <SectionTitle title={title} subtitle={subtitle} />
+      </div>
 
       <div className="goals-marquee relative overflow-hidden">
         <div className="goals-track">

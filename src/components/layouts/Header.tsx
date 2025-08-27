@@ -27,24 +27,6 @@ import {
 type NavChild = { label: string; href: string; description?: string };
 type NavItem = { label: string; href: string; children?: NavChild[] };
 
-/** ── (үлдээв: дараагийн үед хэрэг болж магадгүй, гэхдээ ашиглахгүй) */
-function useScrollDirection(threshold = 8) {
-  const [scrollDir, setScrollDir] = useState<"up" | "down">("up");
-  const lastY = useRef(0);
-  useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY;
-      const delta = Math.abs(y - lastY.current);
-      if (delta < threshold) return;
-      setScrollDir(y > lastY.current ? "down" : "up");
-      lastY.current = y;
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [threshold]);
-  return scrollDir;
-}
-
 function useHoverIntent(delayIn = 100, delayOut = 120) {
   const [open, setOpen] = useState(false);
   const timer = useRef<number | null>(null);
@@ -101,7 +83,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
-  // ✅ Зөвхөн shadow-т нөлөөлнө, алга болгохгүй
+  // зөвхөн shadow-т нөлөөлнө
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 2);
     onScroll();
@@ -109,13 +91,13 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Route солигдоход mobile/drops хаах
+  // route солигдоход хаах
   useEffect(() => {
     setMobileOpen(false);
     setActiveDropdown(null);
   }, [pathname]);
 
-  // Body scroll lock (mobile menu нээгдэхэд)
+  // body scroll lock (mobile menu)
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = mobileOpen ? "hidden" : prev || "";
@@ -124,7 +106,7 @@ export function Header() {
     };
   }, [mobileOpen]);
 
-  // Дэлгэц/scroll дээр бүх drop/менюг хаах
+  // scroll/resize дээр drop-уудыг хаах
   useEffect(() => {
     const closeAll = () => {
       if (mobileOpen) setMobileOpen(false);
@@ -154,13 +136,10 @@ export function Header() {
     <header
       className={[
         "sticky z-[100] transition-all duration-300",
-        // ⬇️ stack-лах offset-оо гаднаас CSS variable-аар удирд (default 0px)
         "bg-white/80 backdrop-blur border-b border-black/5 overflow-visible",
         scrolled ? "shadow-[0_4px_16px_-8px_rgba(0,0,0,0.12)]" : "",
       ].join(" ")}
-      style={{
-        top: "var(--stack-offset, 0px)", // ← TopBar байвал :root эсвэл body дээр --stack-offset тавь
-      }}
+      style={{ top: "var(--stack-offset, 0px)" }}
     >
       <Container className="mx-auto h-16 px-4 md:px-6 lg:px-8 grid grid-cols-[auto,1fr,auto] items-center gap-3 overflow-visible">
         <div className="flex items-center min-w-0">
@@ -183,7 +162,6 @@ export function Header() {
                 priority
               />
             </div>
-
             <span
               className="font-display font-semibold tracking-tight transition-colors duration-300
                  group-hover:text-brand-primary"
@@ -466,11 +444,7 @@ function DropdownPortal({
     const el = anchorRef.current;
     if (!el) return;
     const rect = el.getBoundingClientRect();
-    setPos({
-      top: rect.bottom + 8,
-      left: rect.left,
-      width: rect.width,
-    });
+    setPos({ top: rect.bottom + 8, left: rect.left, width: rect.width });
   };
 
   useLayoutEffect(() => {
