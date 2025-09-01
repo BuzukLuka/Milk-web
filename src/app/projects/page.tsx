@@ -116,7 +116,7 @@ export default function Projects() {
       {/* Hero header */}
       <div className="relative h-[200px] sm:h-[260px] lg:h-[320px] w-full overflow-hidden">
         <Image
-          src="https://mobixsystemsinc.com/images/team/1.jpg"
+          src="/Picture10.png"
           alt="Хэрэгжүүлж буй төслүүд"
           fill
           priority
