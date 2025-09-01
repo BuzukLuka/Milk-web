@@ -20,10 +20,11 @@ const PHOTO_MAP: Record<string, string> = {
   "Т.Мөнхтөр": "/T.Munkhtur.png",
   "Б.Энхтуяа": "/B.Enkhtuyaa.png",
   "Б.Мөнхтамир": "/B.Munkhtamir.png",
-  "Б.Баярмаа": "/B.Bayarmaa.png",
+  "Б.Баярмаа": "/bayrmaa.png",
   "Д.Бямбасайхан": "/D.Byambasaikhan.png",
   "Ц.Дэжидмаа": "/Ts.Dejidmaa.png",
   "Д.Наранцэцэг": "/D.Narantsetseg.png",
+  "Б.Түвшинтөгс": "/tuvshintugs.png",
 };
 
 /** Render one member card */
