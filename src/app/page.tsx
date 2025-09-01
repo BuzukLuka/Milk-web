@@ -306,7 +306,7 @@ export default function HomePage() {
               <div className="grid grid-cols-2 gap-4 aspect-[5/3]">
                 <div className="relative col-span-1 row-span-2 rounded-2xl overflow-hidden">
                   <Image
-                    src="https://mobixsystemsinc.com/images/team/1.jpg"
+                    src="/namriinnogoon_udruud.png"
                     alt="World Milk Day"
                     fill
                     sizes="(max-width:1024px) 100vw, 50vw"
@@ -316,7 +316,7 @@ export default function HomePage() {
                 </div>
                 <div className="relative rounded-2xl overflow-hidden">
                   <Image
-                    src="https://mobixsystemsinc.com/images/team/1.jpg"
+                    src="/temdeglesen (2016).png"
                     alt="Green Days"
                     fill
                     sizes="(max-width:1024px) 50vw, 25vw"
@@ -325,7 +325,7 @@ export default function HomePage() {
                 </div>
                 <div className="relative rounded-2xl overflow-hidden">
                   <Image
-                    src="https://mobixsystemsinc.com/images/team/1.jpg"
+                    src="/tsagaan_huvisgal.png"
                     alt="Training"
                     fill
                     sizes="(max-width:1024px) 50vw, 25vw"

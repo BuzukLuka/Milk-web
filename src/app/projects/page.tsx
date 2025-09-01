@@ -23,37 +23,37 @@ const achievements = [
     title: "Дэлхийн сүүний өдрийг Монголд анх удаа тэмдэглэсэн (2016)",
     desc: "“ЭХ ОРНЫ СҮҮ — ЭРҮҮЛ ХҮНС — АМЬДАРЛЫН БАТАЛГАА” уриан дор салбарын оролцогчидтой хамтран зохион байгуулсан.",
     icon: Globe2,
-    img: "https://mobixsystemsinc.com/images/team/1.jpg",
+    img: "/temdeglesen (2016).png",
   },
   {
     title: "“Намрын ногоон өдрүүд-2016” — “СҮҮ: ТӨГС ХҮНС” хэрэглэгчийн булан",
     desc: "Сүүн бүтээгдэхүүний зохистой хэрэглээг дэмжих уралдаан, үзэсгэлэн, хэрэглэгчийн буланг зохион байгуулсан.",
     icon: Megaphone,
-    img: "https://mobixsystemsinc.com/images/team/1.jpg",
+    img: "/namriinnogoon_udruud.png",
   },
   {
     title: "“Мах сүүний анхдугаар аян” цуврал хэлэлцүүлэг, сургалтууд",
     desc: "Төр, хувийн хэвшил, фермерүүдийн оролцоотой мэдлэг түгээх үйл ажиллагааг өрнүүлсэн.",
     icon: GraduationCap,
-    img: "https://mobixsystemsinc.com/images/team/1.jpg",
+    img: "/ayn.png",
   },
   {
     title: "БНЭУ — ССХҮЗ туршлага судлах аялал",
     desc: "Салбарын сайн туршлага, бодлого, хоршооллын загварыг судалж нутагшуулсан.",
     icon: BookOpen,
-    img: "https://mobixsystemsinc.com/images/team/1.jpg",
+    img: "/turshlaga_sudlah.png",
   },
   {
     title: "Дэлхийн сүүний өдрийг хамтран зохион байгуулсан",
     desc: "Олон улсын түншлэл, хамтын ажиллагааг тэлж, салбарын нэр хүндийг өсгөсөн.",
     icon: Landmark,
-    img: "https://mobixsystemsinc.com/images/team/1.jpg",
+    img: "/happy_milk_day.png",
   },
   {
     title: "“ЦАГААН ХУВЬСГАЛ” санаачилга (2023.03)",
     desc: "“ХҮНСНИЙ ХУВЬСГАЛ” бодлогыг дэмжих хүрээнд дижитал, инновацын шийдлүүдийг дэвшүүлэв.",
     icon: Sprout,
-    img: "https://mobixsystemsinc.com/images/team/1.jpg",
+    img: "/tsagaan_huvisgal.png",
   },
 ];
 
@@ -92,20 +92,20 @@ const ongoing = [
   {
     title: "FAO/EBRD: Strengthening Climate Resilience in Dairy Farming",
     desc: "Уур амьсгалын өөрчлөлтөнд дасан зохицох чадварыг бэхжүүлж, ирээдүйн хүнсний тогтвортой байдлыг хангах техникийн туслалцааны төсөл.",
-    img: "https://mobixsystemsinc.com/images/team/1.jpg",
+    img: "/Picture2.jpg",
     tags: ["Climate Resilience", "Capacity Building", "Policy"],
   },
   {
     title:
       "“Монголын хувийн секторт гарах боломжууд” уулзалт (EBRD, FAO хамтран)",
     desc: "Сүү, сүүн бүтээгдэхүүний салбарт хувийн хэвшлийн оролцоог нэмэгдүүлэх хэлэлцүүлэг, шийдэл.",
-    img: "https://mobixsystemsinc.com/images/team/1.jpg",
+    img: "/Picture1.jpg",
     tags: ["Investment", "Dialogue"],
   },
   {
     title: "Фермерүүдийн чадавхижуулах сургалт (НҮБ-ын ХХААБ + АПУ Дэйри)",
     desc: "Технологи, чанар, эрүүл ахуйн стандарт, менежментийн сургалтууд.",
-    img: "https://mobixsystemsinc.com/images/team/1.jpg",
+    img: "/10-farmeruudiig-demjih-hutulbur-cover.jpg",
     tags: ["Training", "Quality", "Standards"],
   },
 ];
