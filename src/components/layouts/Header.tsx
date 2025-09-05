@@ -22,6 +22,9 @@ import {
   ChevronRight,
   BarChart3,
   Phone,
+  Share2,
+  Search,
+  Globe,
 } from "lucide-react";
 
 type NavChild = { label: string; href: string; description?: string };
@@ -83,7 +86,6 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
-  // зөвхөн shadow-т нөлөөлнө
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 2);
     onScroll();
@@ -91,13 +93,11 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // route солигдоход хаах
   useEffect(() => {
     setMobileOpen(false);
     setActiveDropdown(null);
   }, [pathname]);
 
-  // body scroll lock (mobile menu)
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = mobileOpen ? "hidden" : prev || "";
@@ -105,22 +105,6 @@ export function Header() {
       document.body.style.overflow = prev;
     };
   }, [mobileOpen]);
-
-  // scroll/resize дээр drop-уудыг хаах
-  useEffect(() => {
-    const closeAll = () => {
-      if (mobileOpen) setMobileOpen(false);
-      if (activeDropdown) setActiveDropdown(null);
-    };
-    const onScroll = () => closeAll();
-    const onResize = () => closeAll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
-    };
-  }, [mobileOpen, activeDropdown]);
 
   const nav = useMemo(() => site.nav as NavItem[], []);
   const centerItems = useMemo(
@@ -136,106 +120,115 @@ export function Header() {
     <header
       className={[
         "sticky z-[100] transition-all duration-300",
-        "bg-white/80 backdrop-blur border-b border-black/5 overflow-visible",
-        scrolled ? "shadow-[0_4px_16px_-8px_rgba(0,0,0,0.12)]" : "",
+        "bg-white/90 backdrop-blur border-b border-black/10",
+        scrolled ? "shadow-[0_8px_24px_-12px_rgba(0,0,0,0.12)]" : "",
       ].join(" ")}
       style={{ top: "var(--stack-offset, 0px)" }}
     >
-      <Container className="mx-auto h-16 px-4 md:px-6 lg:px-8 grid grid-cols-[auto,1fr,auto] items-center gap-3 overflow-visible">
-        <div className="flex items-center min-w-0">
-          <Link
-            href="/"
-            className="group flex items-center gap-3 whitespace-nowrap cursor-pointer"
-          >
-            <div
-              className="h-9 w-12 rounded-xl overflow-hidden bg-transparent
-                 transition-transform duration-300 ease-out
-                 group-hover:scale-110 group-active:scale-95
-                 focus-visible:outline-none"
-            >
+      {/* Top bar — logo left, utilities right */}
+      <Container className="mx-auto px-4 md:px-6 lg:px-8 py-4">
+        <div className="h-14 flex items-center justify-between gap-4">
+          {/* Brand */}
+          <Link href="/" className="group flex items-center gap-3 min-w-0">
+            <div className="flex-shrink-0">
               <Image
                 src="/cchuz_logo.png"
                 alt="Logo"
-                width={70}
-                height={70}
-                className="object-contain"
+                width={64}
+                height={64}
+                className="h-16 w-16 object-contain"
                 priority
               />
             </div>
-            <span
-              className="font-display font-semibold tracking-tight transition-colors duration-300
-                 group-hover:text-brand-primary"
-            >
-              {site.short}
-            </span>
-          </Link>
-        </div>
 
-        <nav className="hidden md:flex items-center justify-center gap-1 h-10 overflow-visible">
-          <div className="flex items-center gap-1 whitespace-nowrap">
-            {centerItems.map((item) =>
-              item.children?.length ? (
-                <DesktopDropdown
-                  key={item.label}
-                  item={item}
-                  activeDropdown={activeDropdown}
-                  setActiveDropdown={setActiveDropdown}
-                />
-              ) : (
-                <NavLink
+            {/* Organization text, smaller than logo */}
+            <div className="leading-tight min-w-0">
+              <span className="block text-sm md:text-base font-semibold bg-gradient-to-r from-[#1e90ff] to-[#0d47a1] bg-clip-text text-transparent">
+                СҮҮНИЙ САЛБАРЫГ ХӨГЖҮҮЛЭХ
+              </span>
+              <span className="block text-sm md:text-base font-semibold bg-gradient-to-r from-[#1e90ff] to-[#0d47a1] bg-clip-text text-transparent">
+                ҮНДЭСНИЙ ЗӨВЛӨЛ
+              </span>
+            </div>
+            <div className="flex flex-col leading-tight min-w-0">
+              <span className="font-semibold tracking-tight truncate">
+                {site.short}
+              </span>
+            </div>
+          </Link>
+
+          <div className="hidden md:flex items-center gap-2">
+            {rightIconItems.map((item) => {
+              const Icon = ICON_MAP[item.label];
+              return (
+                <UtilityLink
                   key={item.href}
                   href={item.href}
-                  label={item.label}
-                  active={pathname === item.href}
-                />
-              )
-            )}
+                  ariaLabel={item.label}
+                >
+                  <Icon className="h-4 w-4" />
+                </UtilityLink>
+              );
+            })}
           </div>
-        </nav>
 
-        <div className="hidden md:flex items-center justify-end gap-2 h-10">
-          {rightIconItems.map((item) => {
-            const Icon = ICON_MAP[item.label];
-            return (
-              <IconNavLink
-                key={item.href}
-                href={item.href}
-                title={item.label}
-                active={pathname === item.href}
-              >
-                <Icon className="h-5 w-5" />
-              </IconNavLink>
-            );
-          })}
-        </div>
-
-        <div className="md:hidden col-start-3 flex items-center justify-end">
-          <button
-            type="button"
-            className="relative z-[170] inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm active:translate-y-[1px] pointer-events-auto"
-            onClick={() => setMobileOpen((v) => !v)}
-            aria-expanded={mobileOpen}
-            aria-controls="mobile-drawer"
-            aria-label="Toggle menu"
-          >
-            {mobileOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Menu className="h-5 w-5" />
-            )}
-            <span className="whitespace-nowrap">
-              {mobileOpen ? "Хаах" : "Цэс"}
-            </span>
-          </button>
+          {/* Mobile toggles */}
+          <div className="md:hidden flex items-center gap-2">
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm active:translate-y-[1px]"
+              onClick={() => setMobileOpen((v) => !v)}
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-drawer"
+              aria-label="Toggle menu"
+            >
+              {mobileOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
+              <span>{mobileOpen ? "Хаах" : "Цэс"}</span>
+            </button>
+          </div>
         </div>
       </Container>
 
+      {/* Second row — main nav */}
+      <div className="border-t border-black/10">
+        <Container className="mx-auto px-4 md:px-6 lg:px-8">
+          <nav className="hidden md:flex h-12 items-center gap-1">
+            {centerItems.map((item, idx) => (
+              <div key={item.label} className="flex items-center">
+                {item.children?.length ? (
+                  <DesktopDropdown
+                    item={item}
+                    activeDropdown={activeDropdown}
+                    setActiveDropdown={setActiveDropdown}
+                  />
+                ) : (
+                  <TopNavLink
+                    href={item.href}
+                    label={item.label}
+                    active={pathname === item.href}
+                  />
+                )}
+                {/* subtle divider between items */}
+                {idx !== centerItems.length - 1 && (
+                  <span className="mx-1 h-5 w-px bg-black/10" aria-hidden />
+                )}
+              </div>
+            ))}
+          </nav>
+        </Container>
+      </div>
+
+      {/* Mobile drawer */}
       <AnimatePresence>
         {mobileOpen && (
           <>
             <motion.button
               type="button"
-              className="md:hidden fixed inset-0 bg-black/20 z-[150]"
+              className="md:hidden fixed inset-0 bg-black/25 z-[150]"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -246,7 +239,7 @@ export function Header() {
               id="mobile-drawer"
               role="dialog"
               aria-modal="true"
-              className="md:hidden fixed left-0 right-0 top-16 z-[160] bg-white border-t"
+              className="md:hidden fixed left-0 right-0 top-[56px] z-[160] bg-white border-t"
               initial={{ y: -8, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -6, opacity: 0 }}
@@ -254,7 +247,7 @@ export function Header() {
             >
               <Container className="mx-auto px-4 md:px-6 lg:px-8">
                 <div className="py-2 w-full flex flex-col items-center justify-center">
-                  <div className="w-full max-w-screen-sm">
+                  <div className="w-full max-w-screen-sm divide-y">
                     {(site.nav as NavItem[]).map((item) => (
                       <MobileItem key={item.label} item={item} />
                     ))}
@@ -269,36 +262,64 @@ export function Header() {
   );
 }
 
-function IconNavLink({
+/* ========== small UI bits ========== */
+function UtilityButton({
+  ariaLabel,
+  children,
+}: {
+  ariaLabel: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={ariaLabel}
+      className="inline-flex items-center justify-center h-9 w-9 rounded-lg border border-black/10 hover:border-black/20 text-gray-700 hover:text-brand-primary transition"
+    >
+      {children}
+    </button>
+  );
+}
+
+function UtilityLink({
   href,
-  title,
-  active,
+  ariaLabel,
   children,
 }: {
   href: string;
-  title: string;
-  active?: boolean;
+  ariaLabel: string;
   children: React.ReactNode;
 }) {
   return (
     <Link
       href={href}
-      aria-label={title}
-      className={[
-        "inline-flex items-center justify-center w-10 h-10 rounded-xl border",
-        "transition shadow-sm hover:shadow-md active:translate-y-[1px]",
-        active
-          ? "border-brand-primary text-brand-primary"
-          : "border-black/10 text-gray-700 hover:text-brand-primary",
-      ].join(" ")}
-      title={title}
+      aria-label={ariaLabel}
+      className="inline-flex items-center justify-center h-9 w-9 rounded-lg border border-black/10 hover:border-black/20 text-gray-700 hover:text-brand-primary transition"
     >
       {children}
     </Link>
   );
 }
 
-function NavLink({
+function LangSwitcher() {
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        className="inline-flex items-center gap-2 h-9 rounded-lg border border-black/10 px-3 text-sm text-gray-700 hover:text-brand-primary hover:border-black/20 transition"
+        aria-haspopup="listbox"
+        aria-expanded="false"
+      >
+        <Globe className="h-4 w-4" />
+        English
+        <ChevronDown className="h-4 w-4" />
+      </button>
+    </div>
+  );
+}
+
+/* ========== nav links ========== */
+function TopNavLink({
   href,
   label,
   active,
@@ -311,21 +332,12 @@ function NavLink({
     <Link
       href={href}
       className={[
-        "group relative inline-flex items-center px-3 text-sm font-medium rounded-xl transition",
-        "hover:text-brand-primary whitespace-nowrap",
+        "group inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-[15px] font-medium",
+        "hover:text-brand-primary",
         active ? "text-brand-primary" : "text-gray-800",
       ].join(" ")}
     >
-      <span className="truncate">{label}</span>
-      <span
-        className={[
-          "absolute left-2 right-2 -bottom-1 h-[2px] rounded-full",
-          active
-            ? "bg-brand-primary"
-            : "bg-transparent group-hover:bg-brand-primary/60",
-          "transition-colors",
-        ].join(" ")}
-      />
+      {label}
     </Link>
   );
 }
@@ -368,7 +380,7 @@ function DesktopDropdown({
         aria-expanded={isActive}
         onClick={handleClick}
         className={[
-          "inline-flex items-center gap-1 px-3 text-sm font-medium rounded-xl h-10 whitespace-nowrap",
+          "inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-[15px] font-medium",
           isActive
             ? "text-brand-primary"
             : "text-gray-800 hover:text-brand-primary",
@@ -379,7 +391,7 @@ function DesktopDropdown({
         <ChevronDown
           className={[
             "h-4 w-4 transition-transform",
-            isActive ? "rotate-180" : "rotate-0",
+            isActive ? "rotate-180" : "",
           ].join(" ")}
         />
       </button>
@@ -498,6 +510,7 @@ function DropdownPortal({
   );
 }
 
+/* ========== mobile ========== */
 function MobileItem({ item }: { item: NavItem }) {
   const [open, setOpen] = useState(false);
 
@@ -505,7 +518,7 @@ function MobileItem({ item }: { item: NavItem }) {
     return (
       <Link
         href={item.href}
-        className="block py-3 text-base border-b last:border-b-0 hover:text-brand-primary text-center"
+        className="block px-1 py-3 text-base hover:text-brand-primary text-center"
       >
         {item.label}
       </Link>
@@ -513,7 +526,7 @@ function MobileItem({ item }: { item: NavItem }) {
   }
 
   return (
-    <div className="border-b last:border-b-0">
+    <div className="py-1">
       <button
         onClick={() => setOpen((v) => !v)}
         className="grid grid-cols-[1fr_auto_1fr] items-center w-full py-3 text-base"
@@ -540,7 +553,7 @@ function MobileItem({ item }: { item: NavItem }) {
             transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
             className="overflow-hidden"
           >
-            <ul className="pb-2">
+            <ul className="pb-2 space-y-1">
               {item.children.map((c) => (
                 <li key={c.href}>
                   <Link
