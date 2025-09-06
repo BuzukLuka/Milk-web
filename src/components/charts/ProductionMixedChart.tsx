@@ -1,8 +1,10 @@
+// src/components/charts/ProductionMixedChart.tsx
 "use client";
+
 import React, { useMemo, useRef } from "react";
 import {
   Chart as ChartJS,
-  // Controllers (MUST register for mixed charts in prod)
+  // Controllers
   LineController,
   BarController,
   // Scales & elements
@@ -16,26 +18,23 @@ import {
   Legend,
   Filler,
   // Types
-  ChartOptions,
-  ScriptableContext,
-  Chart as ChartType,
-  ChartDataset,
+  type ChartOptions,
+  type ScriptableContext,
+  type Chart as ChartType,
+  type ChartDataset,
 } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import type { YearRow } from "@/data/Statistics";
 
 // 🔐 Register EVERYTHING used by the chart
 ChartJS.register(
-  // controllers
   LineController,
   BarController,
-  // scales/elements
   CategoryScale,
   LinearScale,
   BarElement,
   PointElement,
   LineElement,
-  // plugins
   Tooltip,
   Legend,
   Filler
@@ -46,7 +45,8 @@ type Props = {
   height?: number; // default 360
 };
 
-const PRODUCT_KEYS: (keyof YearRow)[] = [
+// Зөвхөн барааны түлхүүрүүд
+const PRODUCT_KEYS = [
   "processedMilk",
   "cream",
   "powder",
@@ -60,7 +60,26 @@ const PRODUCT_KEYS: (keyof YearRow)[] = [
   "cheese",
   "aarts",
   "icecream",
-];
+] as const;
+
+type ProductKey = (typeof PRODUCT_KEYS)[number];
+
+// Түлхүүр → Монгол нэр
+const PRODUCT_LABELS: Record<ProductKey, string> = {
+  processedMilk: "Боловсруулсан шингэн сүү",
+  cream: "Цөцгий",
+  powder: "Хуурай сүү",
+  yogurt: "Тараг",
+  hoormog: "Хоормог",
+  aaruul: "Ааруул",
+  butter: "Цөцгийн тос",
+  uroomZuuhi: "Өрөм, зөөхий",
+  ghee: "Шар тос",
+  thickCream: "Өтгөн цөцгий",
+  cheese: "Бяслаг",
+  aarts: "Аарц",
+  icecream: "Зайрмаг",
+};
 
 const COLORS = [
   "#4A90E2", // blue
@@ -80,7 +99,6 @@ const COLORS = [
 
 export default function ProductionMixedChart({ rows, height = 360 }: Props) {
   const labels = useMemo(() => rows.map((r) => String(r.year)), [rows]);
-
   const canvasRef = useRef<ChartType<"bar" | "line"> | null>(null);
 
   const data = useMemo(() => {
@@ -88,7 +106,7 @@ export default function ProductionMixedChart({ rows, height = 360 }: Props) {
       const base = COLORS[i % COLORS.length];
       return {
         type: "bar" as const,
-        label: labelForKey(key),
+        label: PRODUCT_LABELS[key],
         data: rows.map((r) => r[key] ?? 0),
         backgroundColor: () => hexWithAlpha(base, 0.7),
         borderColor: (ctx: ScriptableContext<"bar">) =>
@@ -171,13 +189,14 @@ export default function ProductionMixedChart({ rows, height = 360 }: Props) {
       x: {
         stacked: true,
         grid: { display: false },
-        ticks: { font: { size: 12, weight: "bold" as const } },
+        ticks: { font: { size: 12, weight: "bold" } },
       },
       y: {
         stacked: true,
         beginAtZero: true,
         grace: "6%",
         grid: { color: "rgba(0,0,0,0.06)" },
+        title: { display: true, text: "мянган тонн" },
         ticks: {
           padding: 6,
           font: { size: 11 },
@@ -200,9 +219,6 @@ export default function ProductionMixedChart({ rows, height = 360 }: Props) {
 /* === helpers === */
 function fmt(n: number) {
   return n.toLocaleString("mn-MN");
-}
-function labelForKey(k: keyof YearRow) {
-  return String(k);
 }
 function hexWithAlpha(hex: string, alpha = 0.7) {
   const r = parseInt(hex.slice(1, 3), 16);
