@@ -14,13 +14,14 @@ export default function PartnersPage() {
       alt: "Эрүүл Монгол хүн",
     },
     { src: "/logo/logo_muls.png", alt: "Хөдөө Аж Ахуйн Сургууль" },
-    { src: "/logo/shine_horshoo.png", alt: "Шинэ хоршоо хөдөлгөөн" },
+    { src: "/logo/fao-logo-en.svg", alt: "НҮБ-ын ХХААБ" },
     {
       src: "/logo/Мал-аж-ахуйн-эрдэм-шинжилгээний-хүрээлэн.png",
       alt: "Мал Аж Ахуйн ЭШХ",
     },
     { src: "/logo/Apud-logo-shine-logo.png", alt: "АПУ Дэйри ХХК" },
-    { src: "/logo/nub.png", alt: "НҮБ-ын ХХААБ" },
+    { src: "/logo/shine_horshoo.png", alt: "Шинэ хоршоо хөдөлгөөн" },
+
     { src: "/logo/huns_huvisgal.png", alt: "Хүнсний хувьсгал НҮТББ" },
   ];
 

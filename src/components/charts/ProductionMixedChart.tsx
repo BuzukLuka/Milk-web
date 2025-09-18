@@ -272,7 +272,7 @@ export default function ProductionMixedChart({ rows, height = 420 }: Props) {
                   className="text-xs rounded-md border border-black/10 px-2 py-1 hover:bg-black/5"
                   onClick={() => setQ("")}
                 >
-                  Цэвэр
+                  Арилгах
                 </button>
               </div>
 
