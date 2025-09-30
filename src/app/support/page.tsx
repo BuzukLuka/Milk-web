@@ -10,7 +10,7 @@ export default function PartnersPage() {
     },
     { src: "/logo/images.png", alt: "Монголын Хүнсчдийн Нэгдсэн Холбоо" },
     {
-      src: "/logo/Эрүүл монгол хүн үндэсний хөдөлгөөн өнөөдөр болж байна.png",
+      src: "/logo/eruul-mongol-hun.png",
       alt: "Эрүүл Монгол хүн",
     },
     { src: "/logo/logo_muls.png", alt: "Хөдөө Аж Ахуйн Сургууль" },
