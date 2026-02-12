@@ -373,7 +373,7 @@ export default function HomePage() {
               text-center shadow
             "
           >
-            БИДНИЙ ЭРХЭМ ЗОРИЛГО 1
+            БИДНИЙ ЭРХЭМ ЗОРИЛГО
           </h2>
         </div>
       </section>
