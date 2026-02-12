@@ -58,7 +58,7 @@ function absolutize(url?: string | null, backendOrigin?: string) {
     backendOrigin ||
     (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api").replace(
       /\/api\/?$/,
-      ""
+      "",
     );
   return url.startsWith("/") ? `${base}${url}` : `${base}/${url}`;
 }
@@ -107,7 +107,7 @@ function CountUp({
     const io = new IntersectionObserver(
       (entries) =>
         entries.forEach((e) => e.isIntersecting && (start(), io.disconnect())),
-      { rootMargin: "0px 0px -10% 0px", threshold: 0.2 }
+      { rootMargin: "0px 0px -10% 0px", threshold: 0.2 },
     );
     io.observe(el);
     return () => io.disconnect();
@@ -161,10 +161,12 @@ export default function HomePage() {
           {
             credentials: "include",
             headers: { Accept: "application/json" },
-          }
+          },
         );
         const json = await res.json();
-        const rows: ApiNews[] = Array.isArray(json) ? json : json.results ?? [];
+        const rows: ApiNews[] = Array.isArray(json)
+          ? json
+          : (json.results ?? []);
 
         const backendOrigin = API_BASE.replace(/\/api\/?$/, "");
         const items: CarouselItem[] = rows.map((n) => {
@@ -371,7 +373,7 @@ export default function HomePage() {
               text-center shadow
             "
           >
-            БИДНИЙ ЭРХЭМ ЗОРИЛГО
+            БИДНИЙ ЭРХЭМ ЗОРИЛГО 1
           </h2>
         </div>
       </section>
