@@ -5,11 +5,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Hero } from "@/components/Hero";
 import { Container } from "@/components/Container";
-// import { SectionTitle } from "@/components/SectionTitle"; // ⛔️ хэрэггүй тул устгасан
 import { Reveal } from "@/components/Reveal";
 
 import { org } from "@/data/Content";
-// import { NEWS } from "@/data/News";
 
 import {
   NewsCarousel,
@@ -24,6 +22,7 @@ import {
   Network,
   Target,
   LineChart,
+  ArrowRight,
 } from "lucide-react";
 import { GoalsMarquee } from "@/components/GoalsMarquee";
 import PartnersPage from "./support/page";
@@ -144,9 +143,8 @@ export default function HomePage() {
     body: string;
   } | null>(null);
 
-  // Backend-ээс сүүлийн 5 мэдээ татах
   const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([]);
-  const [loadingNews, setLoadingNews] = useState(false); // ✅ UI-д ашиглана
+  const [loadingNews, setLoadingNews] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -208,7 +206,6 @@ export default function HomePage() {
     };
   }, []);
 
-  // live data lengths; fallback to defaults
   const members = org?.board?.members?.length ?? null;
   const projects = org?.projects?.length ?? null;
   const partners = org?.partners?.length ?? null;
@@ -222,29 +219,40 @@ export default function HomePage() {
 
   return (
     <>
-      {/* Hero */}
       <Hero />
 
-      <section className="relative">
-        {/* Дээд тууз */}
-        <div className="h-4 bg-[#71c760]" />
+      {/* ── Counter section — dark gradient ── */}
+      <section className="counter-section py-10">
+        <Container>
+          <div className="relative grid grid-cols-2 md:grid-cols-4 gap-px">
+            {stats.map(({ k, v }) => (
+              <div
+                key={k}
+                className="text-center py-6 px-4"
+              >
+                <CountUp
+                  to={v}
+                  className="block text-3xl sm:text-4xl font-extrabold tabular-nums text-white"
+                />
+                <div className="text-xs sm:text-sm font-medium tracking-wider text-sky-300/80 mt-2 uppercase">
+                  {k}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </section>
 
-        {/* Pill гарчиг — absolute ашиглахгүй */}
-        <div className="-mt-4 flex justify-center pb-2">
-          <h2
-            className="
-              inline-flex items-center justify-center
-              rounded-full bg-[#71c760] px-5 sm:px-6 py-2
-              text-white font-bold tracking-wide text-[11px] sm:text-sm md:text-base
-              text-center shadow
-            "
-          >
+      {/* ── Section: Mission ── */}
+      <section className="pt-14 pb-4">
+        <div className="flex justify-center">
+          <h2 className="section-badge badge-green">
+            <span className="h-1.5 w-1.5 rounded-full bg-white/70" />
             БИДНИЙ ЭРХЭМ ЗОРИЛГО
           </h2>
         </div>
       </section>
 
-      {/* Mission / Goals */}
       <div>
         <Container>
           <GoalsMarquee
@@ -255,102 +263,66 @@ export default function HomePage() {
         </Container>
       </div>
 
-      {/* Counter section */}
-      <section className="bg-transparent">
-        <Container className="py-2">
-          <div className="card overflow-hidden">
-            <div className="grid grid-cols-2 md:grid-cols-4">
-              {stats.map(({ k, v }) => (
-                <div
-                  key={k}
-                  className="p-6 sm:p-7 text-center relative after:absolute after:inset-y-4 after:right-0 after:w-px after:bg-black/5 md:after:block after:hidden last:after:hidden"
-                >
-                  <CountUp
-                    to={v}
-                    className="block text-3xl sm:text-4xl font-bold tabular-nums"
-                  />
-                  <div className="text-[11px] sm:text-xs tracking-wide text-black/60 mt-2">
-                    {k}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      <section className="relative">
-        {/* Дээд тууз */}
-        <div className="h-4 bg-[#10a5dd]" />
-
-        {/* Pill гарчиг — absolute ашиглахгүй */}
-        <div className="-mt-4 flex justify-center pb-2">
-          <h2
-            className="
-              inline-flex items-center justify-center
-              rounded-full bg-[#10a5dd] px-5 sm:px-6 py-2
-              text-white font-bold tracking-wide text-[11px] sm:text-sm md:text-base
-              text-center shadow
-            "
-          >
+      {/* ── Section: Key Works ── */}
+      <section className="pt-14 pb-4">
+        <div className="flex justify-center">
+          <h2 className="section-badge badge-blue">
+            <span className="h-1.5 w-1.5 rounded-full bg-white/70" />
             ГОЛ ХЭРЭГЖҮҮЛСЭН АЖЛУУД
           </h2>
         </div>
       </section>
 
-      {/* Highlighted works */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 " />
-        <Container className="py-16">
+        <Container className="py-12">
           <div className="grid lg:grid-cols-2 gap-8">
-            {/* Left: image collage */}
             <Reveal className="relative">
-              <div className="grid grid-cols-2 gap-4 aspect-[5/3]">
-                <div className="relative col-span-1 row-span-2 rounded-2xl overflow-hidden">
+              <div className="grid grid-cols-2 gap-3 aspect-[5/3]">
+                <div className="relative col-span-1 row-span-2 rounded-2xl overflow-hidden shadow-lg">
                   <Image
                     src="/namriinnogoon_udruud.png"
                     alt="World Milk Day"
                     fill
                     sizes="(max-width:1024px) 100vw, 50vw"
-                    className="object-cover"
+                    className="object-cover hover:scale-105 transition-transform duration-500"
                     priority
                   />
                 </div>
-                <div className="relative rounded-2xl overflow-hidden">
+                <div className="relative rounded-2xl overflow-hidden shadow-lg">
                   <Image
                     src="/temdeglesen (2016).png"
                     alt="Green Days"
                     fill
                     sizes="(max-width:1024px) 50vw, 25vw"
-                    className="object-cover"
+                    className="object-cover hover:scale-105 transition-transform duration-500"
                   />
                 </div>
-                <div className="relative rounded-2xl overflow-hidden">
+                <div className="relative rounded-2xl overflow-hidden shadow-lg">
                   <Image
                     src="/tsagaan_huvisgal.png"
                     alt="Training"
                     fill
                     sizes="(max-width:1024px) 50vw, 25vw"
-                    className="object-cover"
+                    className="object-cover hover:scale-105 transition-transform duration-500"
                   />
                 </div>
               </div>
             </Reveal>
 
-            {/* Right: list + CTA */}
             <Reveal delay={0.1}>
               <div className="card p-6 sm:p-8 h-full flex flex-col">
-                <ul className="space-y-3 list-none">
+                <ul className="space-y-3 list-none flex-1">
                   {org.keyWorks.map((k) => (
                     <li key={k} className="flex items-start gap-3">
-                      <span className="mt-2 h-2 w-2 rounded-full bg-[var(--brand-primary)] shrink-0" />
-                      <p className="text-black/80 leading-relaxed">{k}</p>
+                      <span className="mt-2 h-2 w-2 rounded-full bg-sky-500 shrink-0" />
+                      <p className="text-gray-700 leading-relaxed">{k}</p>
                     </li>
                   ))}
                 </ul>
                 <div className="mt-6">
-                  <a href="/projects" className="btn-primary">
+                  <a href="/projects" className="btn-primary inline-flex items-center gap-2">
                     Дэлгэрэнгүй
+                    <ArrowRight className="h-4 w-4" />
                   </a>
                 </div>
               </div>
@@ -359,39 +331,31 @@ export default function HomePage() {
         </Container>
       </section>
 
-      <section className="relative">
-        {/* Дээд тууз */}
-        <div className="h-4 bg-[#71c760]" />
-
-        {/* Pill гарчиг — absolute ашиглахгүй */}
-        <div className="-mt-4 flex justify-center pb-2">
-          <h2
-            className="
-              inline-flex items-center justify-center
-              rounded-full bg-[#71c760] px-5 sm:px-6 py-2
-              text-white font-bold tracking-wide text-[11px] sm:text-sm md:text-base
-              text-center shadow
-            "
-          >
-            БИДНИЙ ЭРХЭМ ЗОРИЛГО
+      {/* ── Section: Activities ── */}
+      <section className="pt-10 pb-4">
+        <div className="flex justify-center">
+          <h2 className="section-badge badge-green">
+            <span className="h-1.5 w-1.5 rounded-full bg-white/70" />
+            ҮЙЛ АЖИЛЛАГААНЫ ЧИГЛЭЛ
           </h2>
         </div>
       </section>
 
       <ActivitiesSection />
 
-      {/* News: loading/ready хоёр төлөв */}
+      {/* ── News ── */}
+      <section className="pt-10 pb-4">
+        <div className="flex justify-center">
+          <h2 className="section-badge badge-blue">
+            <span className="h-1.5 w-1.5 rounded-full bg-white/70" />
+            МЭДЭЭ МЭДЭЭЛЭЛ
+          </h2>
+        </div>
+      </section>
+
       {loadingNews ? (
-        <div className="mx-auto max-w-6xl px-4 py-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="card p-4">
-                <div className="h-40 bg-black/5 rounded-md mb-3" />
-                <div className="h-4 bg-black/10 rounded w-3/4 mb-2" />
-                <div className="h-3 bg-black/10 rounded w-1/2" />
-              </div>
-            ))}
-          </div>
+        <div className="mx-auto max-w-xl px-4 py-6">
+          <div className="animate-pulse rounded-lg bg-gray-100 h-20" />
         </div>
       ) : (
         <NewsCarousel
@@ -408,33 +372,23 @@ export default function HomePage() {
         />
       )}
 
-      <section className="relative">
-        {/* Дээд тууз */}
-        <div className="h-4 bg-[#10a5dd]" />
-
-        {/* Pill гарчиг — absolute ашиглахгүй */}
-        <div className="-mt-4 flex justify-center pb-2">
-          <h2
-            className="
-              inline-flex items-center justify-center
-              rounded-full bg-[#10a5dd] px-5 sm:px-6 py-2
-              text-white font-bold tracking-wide text-[11px] sm:text-sm md:text-base
-              text-center shadow
-            "
-          >
+      {/* ── Section: Partners ── */}
+      <section className="pt-14 pb-4">
+        <div className="flex justify-center">
+          <h2 className="section-badge badge-blue">
+            <span className="h-1.5 w-1.5 rounded-full bg-white/70" />
             ДЭМЖИХ БАЙГУУЛЛАГУУД
           </h2>
         </div>
       </section>
 
-      {/* Dialog & Partners */}
       <NewsDialog
         open={open}
         onClose={() => setOpen(false)}
         item={modal || undefined}
       />
 
-      <div className="mt-10">
+      <div className="mt-6">
         <PartnersPage />
       </div>
     </>

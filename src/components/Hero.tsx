@@ -25,7 +25,7 @@ const SLIDES: Slide[] = [
     ctaPrimary: { href: "/projects", label: "Төслүүд харах" },
     ctaSecondary: { href: "/about", label: "Бидний тухай" },
     img: "/hello1.png",
-    overlay: "bg-black/30",
+    overlay: "bg-gradient-to-r from-black/60 via-black/40 to-black/20",
   },
   {
     title: "Фермер төвтэй экосистем",
@@ -34,7 +34,7 @@ const SLIDES: Slide[] = [
     ctaPrimary: { href: "/about/strategy", label: "Стратеги" },
     ctaSecondary: { href: "/statistics", label: "Статистик" },
     img: "/farmer.jpg",
-    overlay: "bg-black/25",
+    overlay: "bg-gradient-to-r from-black/60 via-black/35 to-black/15",
   },
   {
     title: "Чанар ба аюулгүй байдал",
@@ -43,7 +43,7 @@ const SLIDES: Slide[] = [
     ctaPrimary: { href: "/projects", label: "Одоогийн төслүүд" },
     ctaSecondary: { href: "/contact", label: "Хамтрах" },
     img: "/quality.png",
-    overlay: "bg-black/35",
+    overlay: "bg-gradient-to-r from-black/65 via-black/40 to-black/20",
   },
 ];
 
@@ -143,40 +143,41 @@ export function Hero() {
               else if (offset.x > 60 || velocity.x > 250) paginate(-1);
             }}
           >
-            {/* Background */}
+            {/* Background with cinematic overlay */}
             <div className="absolute inset-0">
               <Image
                 src={active.img}
                 alt={active.title}
                 fill
                 priority
-                className="object-cover will-change-transform"
+                className="object-cover will-change-transform scale-[1.02]"
               />
+              {/* Gradient overlay */}
               <div
                 className={`absolute inset-0 ${
                   active.overlay || "bg-black/25"
                 }`}
               />
+              {/* Bottom vignette for depth */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+              {/* Subtle blue accent glow */}
+              <div className="absolute bottom-0 left-0 w-1/2 h-1/3 bg-gradient-to-tr from-sky-600/10 to-transparent" />
             </div>
-
-            {/* Soft highlight */}
-            <motion.div
-              aria-hidden
-              className="absolute inset-0"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.12 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.6 }}
-              style={{
-                backgroundImage:
-                  "radial-gradient(600px 220px at 15% 20%, rgba(255,255,255,1), transparent)",
-              }}
-            />
 
             {/* Content */}
             <Container className="relative h-full flex flex-col justify-center text-white">
+              {/* Animated accent line */}
+              <motion.div
+                className="w-16 h-1 rounded-full mb-6"
+                style={{ background: "linear-gradient(90deg, #38bdf8, #22c55e)" }}
+                initial={{ width: 0, opacity: 0 }}
+                animate={{ width: 64, opacity: 1 }}
+                transition={{ delay: 0.05, duration: 0.6, ease: EASE_OUT }}
+              />
+
               <motion.h1
-                className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight drop-shadow"
+                className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] tracking-tight"
+                style={{ textShadow: "0 2px 20px rgba(0,0,0,.3)" }}
                 initial={{ y: 18, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{
@@ -190,7 +191,8 @@ export function Hero() {
 
               {active.subtitle && (
                 <motion.p
-                  className="mt-4 max-w-2xl text-base sm:text-lg text-white/90"
+                  className="mt-5 max-w-xl text-base sm:text-lg text-white/90 font-medium leading-relaxed"
+                  style={{ textShadow: "0 1px 8px rgba(0,0,0,.2)" }}
                   initial={{ y: 18, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{
@@ -228,28 +230,28 @@ export function Hero() {
           </motion.div>
         </AnimatePresence>
 
-        {/* Controls */}
+        {/* Controls — glass-style arrows */}
         <div className="pointer-events-none absolute inset-0">
           <div className="container-px mx-auto h-full flex items-center justify-between">
             <button
               aria-label="Previous slide"
               onClick={() => paginate(-1)}
-              className="pointer-events-auto hidden sm:grid place-items-center h-11 w-11 rounded-full bg-white/80 text-brand-ink hover:bg-white focus:outline-none"
+              className="pointer-events-auto hidden sm:grid place-items-center h-12 w-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/25 hover:border-white/40 focus:outline-none transition-all duration-200"
             >
               <ChevronLeft className="h-5 w-5" />
             </button>
             <button
               aria-label="Next slide"
               onClick={() => paginate(1)}
-              className="pointer-events-auto hidden sm:grid place-items-center h-11 w-11 rounded-full bg-white/80 text-brand-ink hover:bg-white focus:outline-none"
+              className="pointer-events-auto hidden sm:grid place-items-center h-12 w-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/25 hover:border-white/40 focus:outline-none transition-all duration-200"
             >
               <ChevronRight className="h-5 w-5" />
             </button>
           </div>
         </div>
 
-        {/* Dots */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 pointer-events-auto flex gap-3">
+        {/* Progress dots — modern pill style */}
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 pointer-events-auto flex items-center gap-2 rounded-full bg-black/20 backdrop-blur-sm px-3 py-1.5">
           {SLIDES.map((s, i) => {
             const isActive = i === index;
             return (
@@ -260,16 +262,15 @@ export function Hero() {
                 onMouseLeave={() => setPaused(false)}
                 aria-label={`Slide ${i + 1}`}
                 aria-current={isActive ? "true" : "false"}
-                className="h-2.5 rounded-full focus:outline-none focus:ring-2 focus:ring-white/70"
+                className="h-2 rounded-full focus:outline-none"
                 initial={false}
                 animate={{
-                  width: isActive ? 32 : 10,
+                  width: isActive ? 28 : 8,
                   backgroundColor: isActive
-                    ? "rgba(255,255,255,1)"
-                    : "rgba(255,255,255,0.6)",
-                  scale: isActive ? 1 : 0.98,
+                    ? "#38bdf8"
+                    : "rgba(255,255,255,0.5)",
                 }}
-                transition={{ duration: 0.22, ease: EASE_OUT }}
+                transition={{ duration: 0.3, ease: EASE_OUT }}
                 style={{ borderRadius: 9999 }}
                 title={`${i + 1}/${total}`}
               />

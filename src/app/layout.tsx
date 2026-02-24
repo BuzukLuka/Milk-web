@@ -25,18 +25,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="mn" suppressHydrationWarning>
-      <body className="min-h-screen flex flex-col relative">
-        {/* Sitewide gradient + grid background */}
-        <div aria-hidden className="fixed inset-0 -z-50 bg-mesh" />
-        <div aria-hidden className="fixed inset-0 -z-40 bg-grid opacity-80" />
-        <div
-          aria-hidden
-          className="fixed -z-30 inset-x-0 -top-24 h-48 blur-3xl opacity-60"
-          style={{
-            background:
-              "radial-gradient(40% 50% at 50% 0%, rgba(180,225,255,.6), transparent 60%)",
-          }}
-        />
+      <body className="min-h-screen flex flex-col relative bg-[#f5f8fc]">
 
         <Header />
         <main className="flex-1">

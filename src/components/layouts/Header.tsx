@@ -109,94 +109,91 @@ export function Header() {
   const nav = useMemo(() => site.nav as NavItem[], []);
   const centerItems = useMemo(
     () => nav.filter((i) => !ICON_MAP[i.label]),
-    [nav]
+    [nav],
   );
   const rightIconItems = useMemo(
     () => nav.filter((i) => !!ICON_MAP[i.label]),
-    [nav]
+    [nav],
   );
 
   return (
     <header
       className={[
         "sticky z-[100] transition-all duration-300",
-        "bg-white/90 backdrop-blur border-b border-black/10",
+        "border-b border-gray-200",
         scrolled ? "shadow-[0_8px_24px_-12px_rgba(0,0,0,0.12)]" : "",
       ].join(" ")}
       style={{ top: "var(--stack-offset, 0px)" }}
     >
-      {/* Top bar — logo left, utilities right */}
-      <Container className="mx-auto px-4 md:px-6 lg:px-8 py-4">
-        <div className="h-14 flex items-center justify-between gap-4">
-          {/* Brand */}
-          <Link href="/" className="group flex items-center gap-3 min-w-0">
-            <div className="flex-shrink-0">
-              <Image
-                src="/cchuz_logo.png"
-                alt="Logo"
-                width={64}
-                height={64}
-                className="h-16 w-16 object-contain"
-                priority
-              />
+      {/* Top bar — dark gradient */}
+      <div className="text-white relative overflow-hidden" style={{ background: "linear-gradient(135deg, #0c1929 0%, #0f2744 60%, #0c2035 100%)" }}>
+        <div className="absolute inset-0 opacity-30" style={{ background: "radial-gradient(600px 200px at 10% 50%, rgba(2,132,199,.3), transparent), radial-gradient(400px 200px at 90% 50%, rgba(34,197,94,.15), transparent)" }} />
+        <Container className="relative mx-auto px-4 md:px-6 lg:px-8 py-2.5">
+          <div className="flex items-center justify-between gap-4">
+            <Link href="/" className="group flex items-center gap-3 min-w-0">
+              <div className="flex-shrink-0 relative">
+                <div className="absolute -inset-1 rounded-full bg-white/5 blur-sm" />
+                <Image
+                  src="/cchuz_logo.png"
+                  alt="Logo"
+                  width={48}
+                  height={48}
+                  className="h-11 w-11 object-contain relative"
+                  priority
+                />
+              </div>
+              <div className="leading-tight min-w-0">
+                <span className="block text-xs md:text-sm font-bold text-white tracking-wide">
+                  СҮҮНИЙ САЛБАРЫГ ХӨГЖҮҮЛЭХ
+                </span>
+                <span className="block text-xs md:text-sm font-bold text-sky-400 tracking-wide">
+                  ҮНДЭСНИЙ ЗӨВЛӨЛ
+                </span>
+              </div>
+            </Link>
+
+            <div className="hidden md:flex items-center gap-2">
+              {rightIconItems.map((item) => {
+                const Icon = ICON_MAP[item.label];
+                return (
+                  <UtilityLink
+                    key={item.href}
+                    href={item.href}
+                    ariaLabel={item.label}
+                  >
+                    <Icon className="h-4 w-4" />
+                  </UtilityLink>
+                );
+              })}
             </div>
 
-            {/* Organization text, smaller than logo */}
-            <div className="leading-tight min-w-0">
-              <span className="block text-sm md:text-base font-semibold bg-gradient-to-r from-[#1e90ff] to-[#0d47a1] bg-clip-text text-transparent">
-                СҮҮНИЙ САЛБАРЫГ ХӨГЖҮҮЛЭХ
-              </span>
-              <span className="block text-sm md:text-base font-semibold bg-gradient-to-r from-[#1e90ff] to-[#0d47a1] bg-clip-text text-transparent">
-                ҮНДЭСНИЙ ЗӨВЛӨЛ
-              </span>
+            {/* Mobile toggles */}
+            <div className="md:hidden flex items-center gap-2">
+              <button
+                type="button"
+                className="inline-flex items-center gap-2 rounded-lg border border-white/20 text-white/90 px-3 py-2 text-sm active:translate-y-[1px]"
+                onClick={() => setMobileOpen((v) => !v)}
+                aria-expanded={mobileOpen}
+                aria-controls="mobile-drawer"
+                aria-label="Toggle menu"
+              >
+                {mobileOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
+                <span>{mobileOpen ? "Хаах" : "Цэс"}</span>
+              </button>
             </div>
-            <div className="flex flex-col leading-tight min-w-0">
-              <span className="font-semibold tracking-tight truncate">
-                {site.short}
-              </span>
-            </div>
-          </Link>
-
-          <div className="hidden md:flex items-center gap-2">
-            {rightIconItems.map((item) => {
-              const Icon = ICON_MAP[item.label];
-              return (
-                <UtilityLink
-                  key={item.href}
-                  href={item.href}
-                  ariaLabel={item.label}
-                >
-                  <Icon className="h-4 w-4" />
-                </UtilityLink>
-              );
-            })}
           </div>
+        </Container>
+      </div>
+      {/* close dark top bar */}
 
-          {/* Mobile toggles */}
-          <div className="md:hidden flex items-center gap-2">
-            <button
-              type="button"
-              className="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm active:translate-y-[1px]"
-              onClick={() => setMobileOpen((v) => !v)}
-              aria-expanded={mobileOpen}
-              aria-controls="mobile-drawer"
-              aria-label="Toggle menu"
-            >
-              {mobileOpen ? (
-                <X className="h-5 w-5" />
-              ) : (
-                <Menu className="h-5 w-5" />
-              )}
-              <span>{mobileOpen ? "Хаах" : "Цэс"}</span>
-            </button>
-          </div>
-        </div>
-      </Container>
-
-      {/* Second row — main nav */}
-      <div className="border-t border-black/10">
+      {/* Second row — nav on white */}
+      <div className="bg-white">
         <Container className="mx-auto px-4 md:px-6 lg:px-8">
-          <nav className="hidden md:flex h-12 items-center gap-1">
+          <nav className="hidden md:flex h-10 items-center gap-0.5">
             {centerItems.map((item, idx) => (
               <div key={item.label} className="flex items-center">
                 {item.children?.length ? (
@@ -212,9 +209,8 @@ export function Header() {
                     active={pathname === item.href}
                   />
                 )}
-                {/* subtle divider between items */}
                 {idx !== centerItems.length - 1 && (
-                  <span className="mx-1 h-5 w-px bg-black/10" aria-hidden />
+                  <span className="mx-1 h-4 w-px bg-gray-200" aria-hidden />
                 )}
               </div>
             ))}
@@ -274,7 +270,7 @@ function UtilityButton({
     <button
       type="button"
       aria-label={ariaLabel}
-      className="inline-flex items-center justify-center h-9 w-9 rounded-lg border border-black/10 hover:border-black/20 text-gray-700 hover:text-brand-primary transition"
+      className="inline-flex items-center justify-center h-9 w-9 rounded-lg border border-white/20 hover:border-white/40 text-white/70 hover:text-white transition"
     >
       {children}
     </button>
@@ -294,7 +290,7 @@ function UtilityLink({
     <Link
       href={href}
       aria-label={ariaLabel}
-      className="inline-flex items-center justify-center h-9 w-9 rounded-lg border border-black/10 hover:border-black/20 text-gray-700 hover:text-brand-primary transition"
+      className="inline-flex items-center justify-center h-9 w-9 rounded-lg border border-white/20 hover:border-white/40 text-white/70 hover:text-white transition"
     >
       {children}
     </Link>
@@ -483,7 +479,7 @@ function DropdownPortal({
         !anchorRef.current?.contains(e.target as Node)
       ) {
         anchorRef.current?.dispatchEvent(
-          new Event("mouseleave", { bubbles: true })
+          new Event("mouseleave", { bubbles: true }),
         );
       }
     };
@@ -506,7 +502,7 @@ function DropdownPortal({
     >
       {children}
     </div>,
-    document.body
+    document.body,
   );
 }
 

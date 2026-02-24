@@ -21,40 +21,42 @@ export function Footer() {
   const flatNav = nav.filter((n) => !n.children || n.children.length === 0);
 
   return (
-    <footer className="relative mt-16 text-white">
+    <footer className="relative mt-20 text-white">
+      {/* Gradient transition from page bg to footer */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-10 inset-x-0 h-10 bg-[radial-gradient(40%_12px_at_50%_0%,rgba(45,106,159,0.55),transparent)]"
+        className="pointer-events-none absolute -top-20 inset-x-0 h-20 bg-gradient-to-b from-transparent to-[#0a1628]"
       />
-      <div className="absolute inset-0 bg-[#040f2e]" />
-      <div className="absolute inset-0 opacity-30 bg-[radial-gradient(600px_200px_at_10%_20%,#2D6A9F,transparent),radial-gradient(500px_220px_at_90%_10%,#6BBF59,transparent)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent,rgba(0,0,0,.25))]" />
+      <div className="absolute inset-0" style={{ background: "linear-gradient(160deg, #0a1628 0%, #0d1f3c 40%, #0a1930 100%)" }} />
+      <div className="absolute inset-0 opacity-20" style={{ background: "radial-gradient(800px 400px at 15% 30%, rgba(2,132,199,.3), transparent), radial-gradient(600px 300px at 85% 70%, rgba(34,197,94,.15), transparent)" }} />
+      {/* Subtle grid pattern */}
+      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
 
       <Container className="relative py-14">
         <div className="grid md:grid-cols-3 gap-10">
           <div className="space-y-3">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 group"
+              className="inline-flex items-center gap-2.5 group"
               aria-label={site.name}
             >
-              <span className="text-xl font-display font-semibold tracking-tight">
+              <span className="text-xl font-display font-bold tracking-tight bg-gradient-to-r from-white to-sky-200 bg-clip-text text-transparent">
                 {site.name}
               </span>
-              <ArrowUpRight className="h-4 w-4 opacity-0 -translate-y-0.5 translate-x-0.5 transition-all group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1" />
+              <ArrowUpRight className="h-4 w-4 opacity-0 -translate-y-0.5 translate-x-0.5 transition-all group-hover:opacity-100 group-hover:translate-x-1 group-hover:-translate-y-1 text-sky-400" />
             </Link>
-            <p className="text-white/80 leading-relaxed">
+            <p className="text-white/60 leading-relaxed text-sm">
               Монгол Улсын сүүний салбарын тогтвортой хөгжилд.
             </p>
 
-            <div className="flex gap-3 pt-2">
+            <div className="flex gap-3 pt-3">
               <Link
                 href={site.facebook}
                 target="_blank"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 hover:bg-white/15 border border-white/10 transition"
+                className="group/icon inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 hover:bg-sky-500/20 border border-white/10 hover:border-sky-400/30 transition-all duration-300"
                 aria-label="Facebook"
               >
-                <Facebook className="h-5 w-5" />
+                <Facebook className="h-5 w-5 text-white/70 group-hover/icon:text-sky-400 transition-colors" />
               </Link>
             </div>
           </div>
@@ -118,14 +120,14 @@ export function Footer() {
               <input
                 type="email"
                 placeholder="Имэйл хаяг"
-                className="w-full rounded-lg bg-white/10 border border-white/15 px-3 py-2 placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-brand-accent/50"
+                className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-sm placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/30 transition-all"
               />
-              <button className="btn-primary whitespace-nowrap">Илгээх</button>
+              <button className="btn-primary whitespace-nowrap !py-2.5 !px-5 !text-xs">Илгээх</button>
             </form>
           </div>
         </div>
 
-        <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-white/70">
+        <div className="mt-12 pt-6 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-white/40">
           <p>
             © {new Date().getFullYear()} {site.short}. All rights reserved.
           </p>

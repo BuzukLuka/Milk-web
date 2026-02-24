@@ -8,13 +8,13 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
-          primary: "#2D6A9F",
-          secondary: "#6BBF59",
-          accent: "#FFD166",
-          ink: "#333333",
-          milk: "#FFFFFF",
-          cream: "#FAF9F6",
-          deep: "#1A4F75",
+          primary: "#0284c7",
+          secondary: "#22c55e",
+          accent: "#38bdf8",
+          ink: "#0f172a",
+          milk: "#f0f9ff",
+          cream: "#f8fafc",
+          deep: "#0369a1",
         },
       },
       fontFamily: {

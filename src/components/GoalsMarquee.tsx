@@ -24,17 +24,22 @@ export function GoalsMarquee({
   const Card = ({ text, idx }: { text: string; idx: number }) => {
     const Icon = icons[idx % icons.length];
     return (
-      <article className="group/card flex-none w-[20rem] sm:w-[22rem] lg:w-[24rem] card p-6 border border-black/5 hover:shadow-lg transition">
+      <article className="group/card relative flex-none w-[20rem] sm:w-[22rem] lg:w-[24rem] rounded-2xl bg-white border border-gray-100 p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+        {/* Top gradient accent bar */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-sky-500 via-blue-500 to-emerald-400 opacity-60 group-hover/card:opacity-100 transition-opacity" />
         <div className="flex items-start gap-4">
-          <div className="h-12 w-12 rounded-lg bg-brand-primary/10 grid place-items-center shrink-0">
-            <Icon className="h-6 w-6 text-brand-primary" />
+          <div className="h-12 w-12 rounded-xl grid place-items-center shrink-0 bg-gradient-to-br from-sky-50 to-blue-50 border border-sky-100/50">
+            <Icon className="h-6 w-6 text-sky-600" />
           </div>
           <div>
-            <h3 className="font-display font-semibold mb-2">Зорилт</h3>
-            <p className="text-black/80 leading-relaxed">{text}</p>
+            <h3 className="font-display font-bold text-gray-900 mb-1.5">Зорилт</h3>
+            <p className="text-gray-600 leading-relaxed text-sm">{text}</p>
           </div>
         </div>
-        <div className="mt-4 h-1 w-full bg-brand-accent/70 rounded-full scale-x-0 origin-left transition-transform duration-300 group-hover/card:scale-x-100" />
+        {/* Bottom progress bar on hover */}
+        <div className="mt-4 h-0.5 w-full rounded-full overflow-hidden bg-gray-100">
+          <div className="h-full w-full bg-gradient-to-r from-sky-500 to-emerald-400 scale-x-0 origin-left transition-transform duration-500 group-hover/card:scale-x-100" />
+        </div>
       </article>
     );
   };

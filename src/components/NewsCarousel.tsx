@@ -96,32 +96,33 @@ export function NewsCarousel({ items, onOpen, autoplayMs }: Props) {
 
   return (
     <section className="relative overflow-x-hidden">
-      <Container className="py-16">
-        <div className="relative overflow-hidden rounded-xl2 border bg-white shadow-soft">
-          <div className="grid lg:grid-cols-2">
-            {/* Visual */}
-            <div className="relative h-64 sm:h-80 lg:h-[420px] overflow-hidden">
-              <AnimatePresence custom={dir} mode="popLayout">
-                <motion.div
-                  key={String(active?.id)}
-                  className="absolute inset-0 overflow-hidden will-change-transform"
-                  custom={dir}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  variants={variants}
-                  drag="x"
-                  dragElastic={0.02} // tighter drag
-                  dragMomentum={false} // no overshoot fling
-                  dragConstraints={{ left: 0, right: 0 }}
-                  onDragEnd={(_, info) => {
-                    const { offset, velocity } = info;
-                    if (offset.x < -60 || velocity.x < -250) next();
-                    else if (offset.x > 60 || velocity.x > 250) prev();
-                  }}
-                >
-                  {active?.image ? (
-                    <>
+      <Container className="py-4">
+        <div className="max-w-xl mx-auto">
+          {/* Horizontal card: thumbnail left + text right */}
+          <div className="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
+            <div className="flex">
+              {/* Thumbnail */}
+              <div className="relative w-24 sm:w-28 shrink-0 overflow-hidden">
+                <AnimatePresence custom={dir} mode="popLayout">
+                  <motion.div
+                    key={String(active?.id)}
+                    className="absolute inset-0 will-change-transform"
+                    custom={dir}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    variants={variants}
+                    drag="x"
+                    dragElastic={0.02}
+                    dragMomentum={false}
+                    dragConstraints={{ left: 0, right: 0 }}
+                    onDragEnd={(_, info) => {
+                      const { offset, velocity } = info;
+                      if (offset.x < -60 || velocity.x < -250) next();
+                      else if (offset.x > 60 || velocity.x > 250) prev();
+                    }}
+                  >
+                    {active?.image ? (
                       <Image
                         src={active.image}
                         alt={active.title}
@@ -129,100 +130,77 @@ export function NewsCarousel({ items, onOpen, autoplayMs }: Props) {
                         priority
                         draggable={false}
                         className="select-none object-cover"
-                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        sizes="112px"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent pointer-events-none" />
-                    </>
-                  ) : (
-                    <div className="absolute inset-0 bg-brand-primary/10" />
-                  )}
-                </motion.div>
-              </AnimatePresence>
+                    ) : (
+                      <div className="absolute inset-0 bg-brand-primary/10" />
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
 
-              {/* Arrows */}
+              {/* Text content */}
+              <div className="flex-1 px-3 py-2.5 flex flex-col justify-center min-w-0">
+                {active?.tag && (
+                  <span className="inline-flex w-fit rounded bg-brand-primary/10 text-brand-deep text-[9px] font-bold px-1.5 py-0.5 mb-1 uppercase tracking-wide">
+                    {active.tag}
+                  </span>
+                )}
+
+                <h3 className="font-display text-xs sm:text-sm font-bold leading-snug line-clamp-2">
+                  {active?.title}
+                </h3>
+
+                <div className="mt-1.5 flex items-center gap-2">
+                  {onOpen && active?.modal ? (
+                    <button
+                      onClick={() => onOpen(active.modal!)}
+                      className="text-xs font-semibold text-brand-primary hover:text-brand-deep transition"
+                      aria-label={`${active.title} — дэлгэрэнгүй`}
+                    >
+                      Дэлгэрэнгүй →
+                    </button>
+                  ) : active?.href ? (
+                    <Link
+                      href={active.href}
+                      target={active.href?.startsWith("http") ? "_blank" : undefined}
+                      className="text-xs font-semibold text-brand-primary hover:text-brand-deep transition inline-flex items-center gap-1"
+                      aria-label={`${active.title} — дэлгэрэнгүй`}
+                    >
+                      Дэлгэрэнгүй →
+                    </Link>
+                  ) : null}
+
+                  {active?.dateText && (
+                    <span className="text-[10px] text-black/40">
+                      <time dateTime={active.dateTime} suppressHydrationWarning>
+                        {active.dateText}
+                      </time>
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Nav arrows — vertical stack on right edge */}
               {total > 1 && (
-                <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-3">
+                <div className="flex flex-col items-center justify-center gap-0.5 px-1.5 border-l border-gray-100">
                   <button
                     aria-label="Prev news"
                     onClick={prev}
-                    className="pointer-events-auto grid place-items-center h-10 w-10 rounded-full bg-white/90 text-brand-ink hover:bg-white"
+                    className="grid place-items-center h-5 w-5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition"
                   >
-                    <ChevronLeft className="h-5 w-5" />
+                    <ChevronLeft className="h-3 w-3" />
                   </button>
+                  <span className="text-[9px] text-gray-400 tabular-nums font-medium">
+                    {index + 1}/{total}
+                  </span>
                   <button
                     aria-label="Next news"
                     onClick={next}
-                    className="pointer-events-auto grid place-items-center h-10 w-10 rounded-full bg-white/90 text-brand-ink hover:bg-white"
+                    className="grid place-items-center h-5 w-5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-700 transition"
                   >
-                    <ChevronRight className="h-5 w-5" />
+                    <ChevronRight className="h-3 w-3" />
                   </button>
-                </div>
-              )}
-            </div>
-
-            {/* Content */}
-            <div className="p-6 lg:p-8 flex flex-col">
-              {active?.tag && (
-                <span className="inline-flex w-fit rounded-full bg-brand-primary/10 text-brand-deep text-xs font-semibold px-3 py-1 mb-3">
-                  {active.tag}
-                </span>
-              )}
-
-              <h3 className="font-display text-2xl font-bold leading-snug">
-                {active?.title}
-              </h3>
-
-              <p className="mt-3 text-black/75 leading-relaxed">
-                {active?.excerpt}
-              </p>
-
-              {active?.dateText && (
-                <div className="mt-3 text-sm text-black/60">
-                  <time dateTime={active.dateTime} suppressHydrationWarning>
-                    {active.dateText}
-                  </time>
-                </div>
-              )}
-
-              <div className="mt-6">
-                {/* if modal payload provided */}
-                {onOpen && active?.modal ? (
-                  <button
-                    onClick={() => onOpen(active.modal!)}
-                    className="btn-secondary"
-                    aria-label={`${active.title} — дэлгэрэнгүй унших`}
-                  >
-                    Дэлгэрэнгүй
-                  </button>
-                ) : active?.href ? (
-                  <Link
-                    href={active.href}
-                    target={
-                      active.href?.startsWith("http") ? "_blank" : undefined
-                    }
-                    className="btn-secondary inline-flex items-center gap-2"
-                    aria-label={`${active.title} — дэлгэрэнгүй унших`}
-                  >
-                    Дэлгэрэнгүй
-                    <ExternalLink className="h-4 w-4" />
-                  </Link>
-                ) : null}
-              </div>
-
-              {total > 1 && (
-                <div className="mt-6 flex gap-2">
-                  {items.map((n, i) => (
-                    <button
-                      key={String(n.id)}
-                      onClick={() => goto(i)}
-                      aria-label={`News ${i + 1}`}
-                      className={`h-2.5 rounded-full transition-all ${
-                        i === index
-                          ? "w-8 bg-brand-primary"
-                          : "w-2.5 bg-black/20 hover:bg-black/35"
-                      }`}
-                    />
-                  ))}
                 </div>
               )}
             </div>
